@@ -3,18 +3,10 @@
     <el-header>
       <el-menu mode="horizontal" :ellipsis="false" router default-active="/accountshopdelete">
         <el-menu-item index="/">首页</el-menu-item>
-<<<<<<< HEAD
-        <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
-        <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
-        <el-menu-item index="/accounttopup">充值</el-menu-item>
-        <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
-        <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
-=======
           <el-menu-item index="/backstage">开店申请</el-menu-item>
           <el-menu-item index="/newgoodshandler">商品上架申请</el-menu-item>
           <el-menu-item index="/modifygoodshandler">商品修改申请</el-menu-item>
         <el-menu-item index="/accountshopdelete">商店删除请求</el-menu-item>
->>>>>>> 8b2f320b646980b435fd3b1a5080bce1fccc4cfc
       </el-menu>
     </el-header>
     <el-main
