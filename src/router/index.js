@@ -106,7 +106,17 @@ const router = createRouter({
       path: '/accountshopdelete',
       name: 'accountshopdelete',
       component: () => import('../views/AccountShopDeletePremission.vue')
-    }
+    },
+    {
+      path: '/orderpage',
+      name: 'orderpage',
+      component: () => import('../views/OrderPage.vue')
+    },
+    {
+      path: '/paymentpage',
+      name: 'paymentpage',
+      component: () => import('../views/PaymentPage.vue')
+    },
   ]
 })
 
