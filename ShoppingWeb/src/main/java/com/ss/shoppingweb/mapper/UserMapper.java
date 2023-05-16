@@ -4,6 +4,7 @@ import com.ss.shoppingweb.entity.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -15,6 +16,7 @@ public interface UserMapper {
     /** 根据用户名查询用户数据*/
     @Select("SELECT * FROM user where name=#{name}")
     User findUserByName(String name);
+
 
     /**根据手机号查询用户数据*/
     @Select("SELECT * FROM user where phone=#{phone}")
@@ -56,6 +58,10 @@ public interface UserMapper {
     /**根据id查流水记录*/
     @Select("Select * from useraccountrecorder where userId=#{userId}")
     List<UserAccountRecorder> findUserAccountRecorderByUserId(Integer userId);
+
+    /**根据id查流水记录*/
+    @Select("Select * from useraccountrecorder where userId=#{userId} and tradeTime >= #{previous}")
+    List<UserAccountRecorder> findUserAccountRecorderByUserIdLimitTime(Integer userId, LocalDateTime previous);
 
     /**修改账户*/
     @Update("Update useraccount set amount=#{amount} where ownerId=#{ownerId}")

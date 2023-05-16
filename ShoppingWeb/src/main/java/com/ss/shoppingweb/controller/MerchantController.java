@@ -108,15 +108,6 @@ public class MerchantController extends BaseController{
         return new JsonResult<>(OK);
     }
 
-    /**获取商店流水信息*/
-    @RequestMapping("/getAccountRecorder")
-    public JsonResult<List<ShopAccountRecorder>> getAccountRecorder(HttpServletRequest request){
-        String name=jwtUtils.getJwtName(request.getHeader("token"));
-        List<ShopAccountRecorder> data=merchantService.getShopAccountRecorder(name);
-        return new JsonResult<>(OK,data);
-
-    }
-
     /**关店申请*/
     @RequestMapping("/closeShopApply")
     public JsonResult<Void> closeShopApply(HttpServletRequest request){
@@ -257,6 +248,14 @@ public class MerchantController extends BaseController{
         Integer data = merchantService.getTotalNumOfFixRecord(shop.getId());
         return new JsonResult<Integer>(OK,data);
     };
+
+    /**根据商户id获取商店账户流水*/
+    @RequestMapping("/getShopAccountRecorder")
+    public JsonResult<List<ShopAccountRecorder>> getShopAccountRecorder(@RequestHeader("token") String token, @RequestParam("timeInterval") Integer timeInterval){
+        Integer merchantId=JwtUtils.getJwtId(token);
+        List<ShopAccountRecorder> data=merchantService.getShopAccountRecorder(merchantId,timeInterval);
+        return new JsonResult<>(OK,data);
+    }
 
 
 }

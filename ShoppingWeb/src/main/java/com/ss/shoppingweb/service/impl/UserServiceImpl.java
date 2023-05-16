@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -137,11 +139,20 @@ public class UserServiceImpl implements UserService {
 
     /**获取流水记录*/
     @Override
-    public List<UserAccountRecorder> getAccountRecorder(String name){
+    public List<UserAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval){
         //获取用户数据
-        User usersql=userMapper.findUserByName(name);
-        //获取账户流水
-        List<UserAccountRecorder> userAccountRecorder=userMapper.findUserAccountRecorderByUserId(usersql.getId());
+        List<UserAccountRecorder> userAccountRecorder;
+        //获取全部账户流水
+        if(timeInterval==0){
+           userAccountRecorder=userMapper.findUserAccountRecorderByUserId(id);
+        }
+        //获取近七天或一个月的账户流水
+        else{
+            LocalDateTime today=LocalDateTime.now();
+            LocalDateTime previous=today.minusDays(timeInterval);
+            userAccountRecorder=userMapper.findUserAccountRecorderByUserIdLimitTime(id,previous);
+        }
+
         return userAccountRecorder;
     }
 

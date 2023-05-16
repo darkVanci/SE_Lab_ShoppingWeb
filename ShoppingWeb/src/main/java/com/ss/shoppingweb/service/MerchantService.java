@@ -33,10 +33,10 @@ public interface MerchantService {
     ShopAccount getShopAccount(String name);
 
     //获取流水记录
-    List<MerchantAccountRecorder> getAccountRecorder(String name);
+    List<MerchantAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval);
 
     //获取商店流水记录
-    List<ShopAccountRecorder> getShopAccountRecorder(String name);
+    List<ShopAccountRecorder> getShopAccountRecorder(Integer merchantId,Integer timeInterval);
 
     //商店账户充值
     void rechargeShopAccount(Integer id,double amount);

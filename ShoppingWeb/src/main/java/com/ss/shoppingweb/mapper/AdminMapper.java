@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -64,6 +65,10 @@ public interface AdminMapper {
     @Select("Select * from adminaccountrecorder where adminId=#{adminId}")
     List<AdminAccountRecorder> findAdminAccountRecorderByAdminId(Integer adminId);
 
+    /**根据id查流水记录*/
+    @Select("Select * from adminaccountrecorder where adminId=#{adminId} and tradeTime >= #{previous}")
+    List<AdminAccountRecorder> findAdminAccountRecorderByAdminIdLimitTime(Integer adminId, LocalDateTime previous);
+
     /**修改购物车中数据*/
     @Update("Update shoppingcart set businessState=-1 where shopId=#{shopId}")
     Integer setShoppingCartState(Integer shopId);
@@ -115,13 +120,17 @@ public interface AdminMapper {
     @Select("Select * from middleaccountrecorder where initiatorRole=#{initiatorRole} and initiatorId=#{initiatorId} and receiverRole=#{receiverRole} and receiverId=#{receiverId}")
     MiddleAccountRecorder findMiddleAccountRecorder(Integer initiatorRole,Integer initiatorId,Integer receiverRole,Integer receiverId);
 
+    /**获取中间账户流水记录*/
+    @Select("select * from middleaccountrecorder")
+    List<MiddleAccountRecorder> findAllMiddleAccountRecorder();
+
+    /**获取一定时间内的中间账户流水*/
+    @Select("select * from middleaccountrecorder where tradeTime >= #{previous}")
+    List<MiddleAccountRecorder> findMiddleAccountRecorderLimitTime(LocalDateTime previous);
+
     /**通过商品ID寻找商品*/
     @Select("SELECT * from commodity where id= #{commodityId}")
     Commodity findCommodityById(Integer commodityId);
-
-    /**通过商品ID寻找待修改的商品*/
-    @Select("SELECT * from commodityfixed where fixId= #{commodityId}")
-    Commodity findCommodityFixedById(Integer commodityId);
 
     /**对商品上架批准*/
     @Update("update commodity set applyState =1 , businessState=1, listTime = #{listTime} where id=#{id}  ")

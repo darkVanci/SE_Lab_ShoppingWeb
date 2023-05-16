@@ -242,23 +242,34 @@ public class MerchantServiceImpl implements MerchantService {
 
     /**获取商店流水记录*/
     @Override
-    public List<ShopAccountRecorder> getShopAccountRecorder(String name){
-        //根据name查商户
-        Merchant merchant=merchantMapper.findMerchantByName(name);
+    public List<ShopAccountRecorder> getShopAccountRecorder(Integer merchantId,Integer timeInterval){
         //根据商户id查商店
-        Shop shop=merchantMapper.findShopByMerchantId(merchant.getId());
-        //根据商店id查流水记录
-        List<ShopAccountRecorder> shopAccountRecorder=merchantMapper.findShopAccountRecorderByShopId(shop.getId());
+        Shop shop=merchantMapper.findShopByMerchantId(merchantId);
+        List<ShopAccountRecorder> shopAccountRecorder;
+        if(timeInterval==0){
+            shopAccountRecorder=merchantMapper.findShopAccountRecorderByShopId(shop.getId());
+        }
+        else{
+            LocalDateTime today=LocalDateTime.now();
+            LocalDateTime previous=today.minusDays(timeInterval);
+            shopAccountRecorder=merchantMapper.findShopAccountRecorderByShopIdLimitTime(shop.getId(),previous);
+        }
         return shopAccountRecorder;
     }
 
     /**获取流水记录*/
     @Override
-    public List<MerchantAccountRecorder> getAccountRecorder(String name){
-        //获取用户数据
-        Merchant merchantsql=merchantMapper.findMerchantByName(name);
-        //获取账户流水
-        List<MerchantAccountRecorder> merchantAccountRecorder=merchantMapper.findMerchantAccountRecorderByMerchantId(merchantsql.getId());
+    public List<MerchantAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval){
+       List<MerchantAccountRecorder> merchantAccountRecorder;
+       if(timeInterval==0){
+           //获取账户流水
+           merchantAccountRecorder=merchantMapper.findMerchantAccountRecorderByMerchantId(id);
+       }
+       else{
+           LocalDateTime today=LocalDateTime.now();
+           LocalDateTime previous=today.minusDays(timeInterval);
+           merchantAccountRecorder=merchantMapper.findMerchantAccountRecorderByMerchantIdLimitTime(id,previous);
+       }
         return merchantAccountRecorder;
     }
 

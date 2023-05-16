@@ -39,7 +39,10 @@ public interface AdminService {
     AdminAccount getAccount(String name);
 
     //获取流水记录
-    List<AdminAccountRecorder> getAccountRecorder(String name);
+    List<AdminAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval);
+
+    //获取中间账户流水
+    List<MiddleAccountRecorder> getMiddleAccountRecorder(Integer timeInterval);
 
     //账户充值
     void rechargeAccount(Integer ownerId,double amount);

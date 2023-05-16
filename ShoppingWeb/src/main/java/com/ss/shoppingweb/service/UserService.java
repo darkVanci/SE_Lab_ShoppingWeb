@@ -32,7 +32,7 @@ public interface UserService {
     void rechargeAccount(Integer OwnerId,double amount);
 
     //获取流水记录
-    List<UserAccountRecorder> getAccountRecorder(String name);
+    List<UserAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval);
 
     //将商品添加到购物车
     void addToShoppingCart(ShoppingCart shoppingCart);

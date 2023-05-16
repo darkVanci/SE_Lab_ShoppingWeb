@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -102,6 +103,10 @@ public interface MerchantMapper {
     @Select("Select * from shopaccountrecorder where shopId=#{shopId}")
     List<ShopAccountRecorder> findShopAccountRecorderByShopId(Integer shopId);
 
+    /**获取商店一段时间内的流水*/
+    @Select("select * from shopaccountrecorder where shopId=#{shopId} and tradeTime >= #{previous}")
+    List<ShopAccountRecorder> findShopAccountRecorderByShopIdLimitTime(Integer shopId,LocalDateTime previous);
+
     /**根据商店id查商品种类*/
     @Select("Select categoryName from commoditycategory where shopId=#{shopId}")
     List<String> findCommodityCategoryByShopId(Integer shopId);
@@ -113,6 +118,10 @@ public interface MerchantMapper {
     /**根据id查流水记录*/
     @Select("Select * from merchantaccountrecorder where merchantId=#{merchantId}")
     List<MerchantAccountRecorder> findMerchantAccountRecorderByMerchantId(Integer merchantId);
+
+    /**根据id查流水记录*/
+    @Select("Select * from merchantaccountrecorder where merchantId=#{merchantId} and tradeTime >= #{previous}")
+    List<MerchantAccountRecorder> findMerchantAccountRecorderByMerchantIdLimitTime(Integer merchantId, LocalDateTime previous);
 
     /**修改账户*/
     @Update("Update shopaccount set amount=#{amount} where id=#{id}")

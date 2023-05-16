@@ -248,12 +248,33 @@ public class AdminServiceImpl implements AdminService {
 
     /**获取流水记录*/
     @Override
-    public List<AdminAccountRecorder> getAccountRecorder(String name){
-        //获取用户数据
-        Admin adminsql=adminMapper.findAdminByName(name);
-        //获取账户流水
-        List<AdminAccountRecorder> adminAccountRecorder=adminMapper.findAdminAccountRecorderByAdminId(adminsql.getId());
+    public List<AdminAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval){
+        List<AdminAccountRecorder> adminAccountRecorder;
+        if(timeInterval==0){
+            //获取账户流水
+            adminAccountRecorder=adminMapper.findAdminAccountRecorderByAdminId(id);
+        }
+        else{
+            LocalDateTime today=LocalDateTime.now();
+            LocalDateTime previous=today.minusDays(timeInterval);
+            adminAccountRecorder=adminMapper.findAdminAccountRecorderByAdminIdLimitTime(id,previous);
+        }
         return adminAccountRecorder;
+    }
+
+    /**获取中间账户流水*/
+    @Override
+    public List<MiddleAccountRecorder> getMiddleAccountRecorder(Integer timeInterval){
+        List<MiddleAccountRecorder> middleAccountRecorder;
+        if(timeInterval==0){
+            middleAccountRecorder=adminMapper.findAllMiddleAccountRecorder();
+        }
+        else{
+            LocalDateTime today=LocalDateTime.now();
+            LocalDateTime previous=today.minusDays(timeInterval);
+            middleAccountRecorder=adminMapper.findMiddleAccountRecorderLimitTime(previous);
+        }
+        return middleAccountRecorder;
     }
 
     /**账户充值*/

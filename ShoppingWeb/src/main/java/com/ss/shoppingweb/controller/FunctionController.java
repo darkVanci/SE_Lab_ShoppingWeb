@@ -86,21 +86,20 @@ FunctionController extends BaseController {
     @RequestMapping ("/getAccountRecorder")
     public JsonResult<Object> getAccountRecorder(@RequestHeader("token") String token, @RequestParam("timeInterval") Integer timeInterval){
         String role=jwtUtils.getJwtRole(token);
-        String name=jwtUtils.getJwtName(token);
         Integer id=jwtUtils.getJwtId(token);
         Object data=new Object();
         switch (role){
             //普通用户
             case "1":
-                data=userService.getAccountRecorder(name);
+                data=userService.getAccountRecorder(id,timeInterval);
                 break;
             //商户
             case "2":
-                data=merchantService.getAccountRecorder(name);
+                data=merchantService.getAccountRecorder(id,timeInterval);
                 break;
             //管理员
             case "3":
-                data=adminService.getAccountRecorder(name);
+                data=adminService.getAccountRecorder(id,timeInterval);
                 break;
             default:
                 break;

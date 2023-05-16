@@ -158,4 +158,10 @@ public class AdminController extends BaseController{
         return result;
     };
 
+    /**展示中间账户流水*/
+    @RequestMapping("/getMiddleAccountRecorder")
+    public JsonResult<List<MiddleAccountRecorder>> getMiddleAccountRecorder(@RequestParam("timeInterval") Integer timeInterval){
+        List<MiddleAccountRecorder> data=adminService.getMiddleAccountRecorder(timeInterval);
+        return new JsonResult<>(OK,data);
+    }
 }
