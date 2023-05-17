@@ -1,7 +1,7 @@
 <template>
     <div class="container">
       <div class="back">
-        <el-button type="primary" plain round>
+        <el-button type="primary" plain round @click="goBack">
           <el-icon style="vertical-align: middle;">
             <Back />
           </el-icon>
@@ -41,6 +41,9 @@
        },
      },
      methods: {
+      goBack() {
+            this.$router.go(-1);
+        },
        pay() {
          // 执行支付逻辑
          if (this.canPay) {
