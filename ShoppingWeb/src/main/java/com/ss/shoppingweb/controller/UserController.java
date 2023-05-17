@@ -1,5 +1,6 @@
 package com.ss.shoppingweb.controller;
 
+import com.ss.shoppingweb.entity.ShippingAddress;
 import com.ss.shoppingweb.entity.ShoppingCart;
 import com.ss.shoppingweb.entity.User;
 import com.ss.shoppingweb.entity.UserAccount;
@@ -97,4 +98,40 @@ public class  UserController extends BaseController{
         return new JsonResult<>(OK);
     };
 
+    /**根据用户id查找收货地址*/
+    @RequestMapping("/findUserShippingAddressByUserId")
+    public JsonResult<List<ShippingAddress>> findUserShippingAddressByUserId(@RequestParam Integer userId){
+        List<ShippingAddress> data = userService.findUserShippingAddressByUserId(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+
+    /**新建收货地址*/
+    @RequestMapping("/addShippingAddress")
+    public JsonResult<Void> addShippingAddress(@RequestBody ShippingAddress shippingAddress){
+        userService.addShippingAddress(shippingAddress);
+        return new JsonResult<>(OK);
+    };
+
+    /**删除收货地址*/
+    @RequestMapping("/deleteShippingAddress")
+    public JsonResult<Void> deleteShippingAddress(@RequestParam Integer id){
+        userService.deleteShippingAddress(id);
+        return new JsonResult<>(OK);
+    };
+
+    /**修改收货地址*/
+    @RequestMapping("/updateShippingAddress")
+    public JsonResult<Void> updateShippingAddress(@RequestBody ShippingAddress shippingAddress){
+        userService.updateShippingAddress(shippingAddress);
+        return new JsonResult<>(OK);
+    };
+
+
+    /**根据收货地址id查找收货地址*/
+    @RequestMapping("/findUserShippingAddressById")
+    public JsonResult<ShippingAddress> findUserShippingAddressById(@RequestParam Integer id){
+        ShippingAddress data = userService.findUserShippingAddressById(id);
+        return new JsonResult<>(OK,data);
+    };
 }

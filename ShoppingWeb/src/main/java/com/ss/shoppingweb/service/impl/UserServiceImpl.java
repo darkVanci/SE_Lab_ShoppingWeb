@@ -172,18 +172,43 @@ public class UserServiceImpl implements UserService {
 
     //将商品添加到购物车
     public void addToShoppingCart(ShoppingCart shoppingCart){
-        Commodity commodity = userMapper.getCommodityDataById(shoppingCart.getCommodityId());
-        Shop shop = userMapper.getShopDataByShopId(commodity.getShopId());
-        shoppingCart.setBusinessState(commodity.getBusinessState());
-        shoppingCart.setCommodityCategoryName(commodity.getCategoryName());
-        shoppingCart.setCommodityName(commodity.getCommodityName());
-        shoppingCart.setIntroduction(commodity.getIntroduction());
-        shoppingCart.setPrice(commodity.getPrice());
-        shoppingCart.setImageUrl(commodity.getImageUrl());
-        shoppingCart.setCommodityShopName(shop.getShopName());
-        Integer rows = userMapper.addToShoppingCart(shoppingCart);
-        if(rows!=1){
-            throw new InsertException("商品加入购物车出现问题，请联系系统管理员！");
+        ShoppingCart shoppingCart1 = userMapper.getShoppingCartDataByUserIdAndCommodityId(shoppingCart.getUserId(),shoppingCart.getCommodityId());
+        if(shoppingCart1==null){
+            Commodity commodity = userMapper.getCommodityDataById(shoppingCart.getCommodityId());
+            Shop shop = userMapper.getShopDataByShopId(commodity.getShopId());
+            shoppingCart.setBusinessState(commodity.getBusinessState());
+            shoppingCart.setCommodityCategoryName(commodity.getCategoryName());
+            shoppingCart.setCommodityName(commodity.getCommodityName());
+            shoppingCart.setIntroduction(commodity.getIntroduction());
+            shoppingCart.setPrice(commodity.getPrice());
+            shoppingCart.setImageUrl(commodity.getImageUrl());
+            shoppingCart.setCommodityShopName(shop.getShopName());
+            Integer rows = userMapper.addToShoppingCart(shoppingCart);
+            if(rows!=1){
+                throw new InsertException("商品加入购物车出现问题，请联系系统管理员！");
+            }
+        }else{
+            shoppingCart1.setCommodityNum(shoppingCart.getCommodityNum()+shoppingCart1.getCommodityNum());
+            userMapper.addShoppingCartCommodityNumber(shoppingCart1);
+        }
+    }
+
+    /**将购物车中指定商品数量加1*/
+    public void addShoppingCartCommodityNumber(Integer id){
+        ShoppingCart shoppingCart = userMapper.getShoppingCartDataById(id);
+        shoppingCart.setCommodityNum(shoppingCart.getCommodityNum()+1);
+        userMapper.addShoppingCartCommodityNumber(shoppingCart);
+    };
+
+    /**将购物车中指定商品数量减1*/
+    public void subShoppingCartCommodityNumber(Integer id) {
+        ShoppingCart shoppingCart = userMapper.getShoppingCartDataById(id);
+        if (shoppingCart.getCommodityNum() == 1) {
+            userMapper.deleteShoppingCart(id);
+
+        } else {
+            shoppingCart.setCommodityNum(shoppingCart.getCommodityNum() - 1);
+            userMapper.subShoppingCartCommodityNumber(shoppingCart);
         }
     };
 
@@ -218,5 +243,32 @@ public class UserServiceImpl implements UserService {
             }
         }
     };
+
+    /**根据用户id查找收货地址*/
+    public List<ShippingAddress> findUserShippingAddressByUserId(Integer userId){
+        return userMapper.findUserShippingAddressByUserId(userId);
+    };
+
+    /**新建收货地址*/
+    public void addShippingAddress(ShippingAddress shippingAddress){
+        userMapper.addShippingAddress(shippingAddress);
+    };
+
+    /**删除收货地址*/
+    public void deleteShippingAddress(Integer id){
+        userMapper.deleteShippingAddress(id);
+    };
+
+
+    /**修改收货地址*/
+    public void updateShippingAddress(ShippingAddress shippingAddress){
+        userMapper.updateShippingAddress(shippingAddress);
+    };
+
+    /**根据收货地址id查找收货地址*/
+    public ShippingAddress findUserShippingAddressById(Integer id){
+        return  userMapper.findUserShippingAddressById(id);
+    };
+
 
 }
