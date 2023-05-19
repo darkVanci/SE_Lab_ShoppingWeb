@@ -17,18 +17,14 @@
                     <tr>
                         <th>商品名称</th>
                         <th>购买件数</th>
-                        <th>店铺名称</th>
                         <th>单价</th>
-                        <th>备注</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(product, index) in selectedRows" :key="index">
                         <td>{{ product.commodityName }}</td>
                         <td>{{ product.commodityNum }}</td>
-                        <td>{{ product.businessName }}</td>
                         <td>{{ product.price }}</td>
-                        <td>{{ product.note }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -47,15 +43,6 @@
                 <input type="text" id="new-address" v-model="newAddress">
                 <button @click="addNewAddress">保存</button>
             </div>
-        </div>
-
-        <!-- 优惠券 -->
-        <div class="coupons">
-            <h2>优惠券</h2>
-            <label for="coupon">选择优惠券：</label>
-            <select id="coupon" name="coupon" v-model="selectedCoupon">
-                <option v-for="(coupon, index) in coupons" :key="index" :value="coupon">{{ coupon }}</option>
-            </select>
         </div>
 
         <!-- 结算金额及优惠明细 -->

@@ -90,7 +90,7 @@ export default {
   position: relative;
   transform: translateY(-50%);
   top: 50%;
-  background-color:
+  /* background-color: */
 }
 
 .main {

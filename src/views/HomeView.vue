@@ -27,6 +27,8 @@
         </div>
         <el-main
         ><h2>商店列表</h2>
+        <!-- <router-link to="/"><img src="../assets/image/img_83238.png" /></router-link> -->
+        <!-- <img src="../assets/image/img_83238.png" /> -->
           <!-- <el-slider v-model="size" style="width: 500px" /> -->
           <el-space wrap>
             <el-card v-for="shop in shops" :key="shop.id" class="box-card" style="width: 250px">

@@ -8,6 +8,7 @@
                 <span style="vertical-align: middle;"> 返回 </span>
             </el-button>
         </div>
+
         <div v-for="(image, index) in images" :key="index">
             <img :src="image" />
         </div>
@@ -37,17 +38,20 @@
                         <td>{{ goodsInf.price }} 元</td>
                     </tr>
                     <tr>
+                        <td>总价</td>
+                        <td>{{ num * goodsInf.price }} 元</td>
+                    </tr>
+                    <tr>
                         <td>购买件数</td>
                         <td><el-input-number v-model="num" @change="handleChange" :min="1" :max="10000"
                                 label="描述文字"></el-input-number>
                             <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="primary" plain
                                 @click="addtocart(goodsInf.id, num)">加入购物车</el-button>
+                            <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="success" plain
+                                @click="placeOrder()">直接购买</el-button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>总价</td>
-                        <td>{{ num * goodsInf.price }} 元</td>
-                    </tr>
+
                 </tbody>
             </table>
         </div>
@@ -127,13 +131,30 @@ export default {
             })
     },
     methods: {
+        placeOrder() {
+            let selectedRows = [{
+                commodityName: this.goodsInf.commodityName,
+                introduction: this.goodsInf.introduction,
+                price: this.goodsInf.price,
+                businessState: 1,
+                commodityCategoryName: this.goodsInf.categoryName,
+                commodityId: this.goodsInf.id,
+                commodityNum: this.num,
+                // commodityShopName: "老王杂货店",                
+                // id: 
+            }];
+            localStorage.removeItem('selectedRows') // 先删除已有的
+            localStorage.setItem('selectedRows', JSON.stringify(selectedRows))
+            // 跳转到下单页面
+            this.$router.push({ name: 'orderpage' })
+        },
         addtocart(goodId, num) {
             const token = localStorage.getItem('token')
             this.$axios
                 .post(
                     '/user/addToShoppingCart',
                     {
-                        // shopId: this.goodsInf.shopId,//后端直接传shopId即可
+                        shopId: this.goodsInf.shopId,
                         userId: this.inf.data.id,
                         commodityId: goodId,
                         commodityNum: num
