@@ -127,4 +127,101 @@ public interface UserMapper {
     /**修改收货地址*/
     @Update("Update shippingaddress set name=#{name},phone=#{phone},address=#{address}  where id=#{id}")
     Integer updateShippingAddress(ShippingAddress shippingAddress);
+
+    /**新建订单*/
+    @Insert("Insert into orders (userId,shopId,commodityId,userName,shopName,commodityName,commodityPrice,commodityNum,amountSum,purchaseTime,address,payState,withdrawState,deliveryState,finishState,refundRequest,refundState) values (#{userId},#{shopId},#{commodityId},#{userName},#{shopName},#{commodityName},#{commodityPrice},#{commodityNum},#{amountSum},#{purchaseTime},#{address},#{payState},#{withdrawState},#{deliveryState},#{finishState},#{refundRequest},#{refundState})")
+    Integer insertOrders(Orders orders);
+
+    /**根据订单编号获取订单*/
+    @Select("Select * from orders where id=#{orderId}")
+    Orders findOrderByOrderId(Integer orderId);
+
+    /**修改订单支付状态*/
+    @Update("Update orders set payState=1 where id=#{orderId}")
+    Integer updatePayStateBYOrderId(Integer orderId);
+
+    /**插入用户流水记录*/
+    @Insert("Insert into useraccountrecorder (userId,initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{userId},#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertUserAccountRecorder(UserAccountRecorder userAccountRecorder);
+
+    /**获取中间账户*/
+    @Select("Select * from middleaccount")
+    MiddleAccount findMiddleAccount();
+
+    /**修改中间账户*/
+    @Update("Update middleaccount set amount=#{amount}")
+    Integer updateMiddleAccount(double amount);
+
+    /**插入中间商城流水记录*/
+    @Insert("Insert into middleaccountrecorder (initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertMiddleAccountRecorder(MiddleAccountRecorder middleAccountRecorder);
+
+    /**修改撤销状态*/
+    @Update("Update orders set withdrawState=1 where id=#{orderId}")
+    Integer updateWithdrawStatwByOrderId(Integer orderId);
+
+    /**删除订单*/
+    @Delete("Delete from orders where id=#{orderId}")
+    Integer deleteOrderByOrderId(Integer orderId);
+
+    /**获取待支付订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=0 and withdrawState=0")
+    List<Orders> getToPayOrdersByUserId(Integer userId);
+
+    /**获取已撤销订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=0 and withdrawState=1")
+    List<Orders> getHaveWithdrawOrdersByUserId(Integer userId);
+
+    /**获取待发货订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=1 and deliveryState=0 and refundRequest=0")
+    List<Orders> getToDeliveryOrdersByUserId(Integer userId);
+
+    /**获取待收货订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=1 and deliveryState=1 and finishState=0 and refundRequest=0")
+    List<Orders> getHaveDeliveryOrdersByUserId(Integer userId);
+
+    /**修改订单退款申请*/
+    @Update("Update orders set refundRequest=1 where id=#{orderId}")
+    Integer UpdateRefundRequestByOrderId(Integer orderId);
+
+    /**获取待退款订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=1 and refundRequest=1 and refundState=0")
+    List<Orders> getToRefundOrdersByUserId(Integer userId);
+
+    /**获取已退款订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=1 and refundRequest=1 and refundState=1")
+    List<Orders> getHaveRefundOrdersByUserId(Integer userId);
+
+    /**获取已完成订单*/
+    @Select("Select * from orders where userId=#{userId} and payState=1 and deliveryState=1 and finishState=1")
+    List<Orders> getHaveFinishOrdersByUserId(Integer userId);
+
+
+    /**修改订单完成状态*/
+    @Update("Update orders set finishState=1 where id=#{orderId}")
+    Integer UpdateFinishStateByOrderId(Integer orderId);
+
+    /**获得商城利润账户*/
+    @Select("Select * from adminaccount where id=1")
+    AdminAccount findAdminAccount();
+
+    /**修改商城利润账户*/
+    @Update("Update adminaccount set amount=#{amount} where id=1")
+    Integer UpdateAdminAccount(double amount);
+
+    /**插入商城利润账户流水记录*/
+    @Insert("Insert into adminaccountrecorder (adminId,initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{adminId},#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertAdminAccountRecorder(AdminAccountRecorder adminAccountRecorder);
+
+    /**根据商店id查找商店账户*/
+    @Select("Select * from shopaccount where shopId=#{shopId}")
+    ShopAccount findShopAccountByShopId(Integer shopId);
+
+    /**修改商店账户*/
+    @Update("Update shopaccount set amount=#{amount} where shopId=#{shopId}")
+    Integer updateShopAccount(double amount,Integer shopId);
+
+    /**插入商店账户流水记录*/
+    @Insert("Insert into shopaccountrecorder (shopId,initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{shopId},#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertShopAccountRecorder(ShopAccountRecorder shopAccountRecorder);
 }

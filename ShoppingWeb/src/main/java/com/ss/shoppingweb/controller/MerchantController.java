@@ -257,5 +257,34 @@ public class MerchantController extends BaseController{
         return new JsonResult<>(OK,data);
     }
 
+    /**获取待发货的订单*/
+    @RequestMapping("/getShopToDeliveryOrders")
+    public JsonResult<List<Orders>> getShopToDeliveryOrders(HttpServletRequest request){
+        Integer merchantId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=merchantService.getShopToDeliveryOrders(merchantId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**商店发货*/
+    @PostMapping("/shopDeliveryOrders")
+    public JsonResult<Void> shopDeliveryOrders(@RequestBody Orders order){
+        merchantService.shopDeliveryOrders(order.getId());
+        return new JsonResult<>(OK);
+    }
+
+    /**获取商店退货退款订单*/
+    @RequestMapping("/getShopRefundOrders")
+    public JsonResult<List<Orders>> getShopRefundOrders(HttpServletRequest request){
+        Integer merchantId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=merchantService.getShopRefundOrders(merchantId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /***同意退款退货*/
+    @PostMapping("/agreeRefund")
+    public JsonResult<Void> agreeRefund(@RequestBody Orders order){
+        merchantService.agreeRefund(order.getId());
+        return new JsonResult<>(OK);
+    }
 
 }

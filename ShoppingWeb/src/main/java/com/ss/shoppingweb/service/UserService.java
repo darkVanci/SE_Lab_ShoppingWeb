@@ -60,4 +60,46 @@ public interface UserService {
 
     /**根据收货地址id查找收货地址*/
     ShippingAddress findUserShippingAddressById(Integer id);
+
+    /**创建订单*/
+    void createOrder(Orders order);
+
+    /**支付订单*/
+    void payOrder(Integer orderId);
+
+    /**判断用户余额是否充足*/
+    void judgeUserAccount(Integer userId,List<Orders> orders);
+
+    /**撤销订单*/
+    void withdrawOrders(Integer orderId);
+
+    /**删除订单*/
+    void deleteOrders(Integer orderId);
+
+    /**获取待支付订单*/
+    List<Orders> getToPayOrders(Integer userId);
+
+    /**获取已撤销订单*/
+    List<Orders> getHaveWithdrawOrders(Integer userId);
+
+    /**获取待发货订单*/
+    List<Orders> getToDeliveryOrders(Integer userId);
+
+    /**获取待收货订单*/
+    List<Orders> getHaveDeliveryOrders(Integer userId);
+
+    /**请求退款退货*/
+    void requestRefund(Integer orderId);
+
+    /**获取待退款订单*/
+    List<Orders> getToRefundOrders(Integer userId);
+
+    /**获取已退款订单*/
+    List<Orders> getHaveRefundOrders(Integer userId);
+
+    /**获取已完成订单*/
+    List<Orders> getHaveFinishOrders(Integer userId);
+
+    /**确认收货*/
+    void confirmFinishOrders(Integer orderId);
 }

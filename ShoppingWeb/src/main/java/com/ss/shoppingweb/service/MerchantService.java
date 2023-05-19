@@ -1,6 +1,7 @@
 package com.ss.shoppingweb.service;
 
 import com.ss.shoppingweb.entity.*;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
@@ -86,4 +87,16 @@ public interface MerchantService {
 
     /**根据商店ID查询修改记录总数*/
     Integer getTotalNumOfFixRecord(Integer shopId);
+
+    /**根据商户id获取商店待发货订单*/
+    List<Orders> getShopToDeliveryOrders(Integer merchantId);
+
+    /**商店发货*/
+    void shopDeliveryOrders(Integer orderId);
+
+    /**根据商户id获取商店退款退货订单*/
+    List<Orders> getShopRefundOrders(Integer merchantId);
+
+    /**同意退款退货*/
+    void agreeRefund(Integer orderId);
 }
