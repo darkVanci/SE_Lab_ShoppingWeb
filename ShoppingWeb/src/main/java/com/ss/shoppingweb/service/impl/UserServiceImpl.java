@@ -270,5 +270,12 @@ public class UserServiceImpl implements UserService {
         return  userMapper.findUserShippingAddressById(id);
     };
 
+    /**
+     * 根据用户id查找该用户拥有的优惠券
+     */
+    public List<Coupon> findUserCouponByUserId(Integer userId){
+        return  userMapper.findUserCouponByUserId(userId);
+    };
+
 
 }

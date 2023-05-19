@@ -190,4 +190,10 @@ public interface AdminMapper {
     /**插入中间账户数据*/
     @Insert("Insert into middleaccountrecorder (initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
     Integer insertMiddleAccountRecorder(MiddleAccountRecorder middleAccountRecorder);
+
+    /**
+     * 管理员发布优惠券
+     */
+    @Select("Select * from coupon where userId=#{userId}")
+    List<Coupon> findUserCouponByUserId(Integer userId);
 }

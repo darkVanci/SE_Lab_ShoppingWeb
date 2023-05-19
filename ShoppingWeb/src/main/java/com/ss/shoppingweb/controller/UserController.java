@@ -1,9 +1,6 @@
 package com.ss.shoppingweb.controller;
 
-import com.ss.shoppingweb.entity.ShippingAddress;
-import com.ss.shoppingweb.entity.ShoppingCart;
-import com.ss.shoppingweb.entity.User;
-import com.ss.shoppingweb.entity.UserAccount;
+import com.ss.shoppingweb.entity.*;
 import com.ss.shoppingweb.service.UserService;
 import com.ss.shoppingweb.utils.JsonResult;
 import com.ss.shoppingweb.utils.JwtUtils;
@@ -133,5 +130,14 @@ public class  UserController extends BaseController{
     public JsonResult<ShippingAddress> findUserShippingAddressById(@RequestParam Integer id){
         ShippingAddress data = userService.findUserShippingAddressById(id);
         return new JsonResult<>(OK,data);
+    };
+
+    /**
+     * 根据用户id查找该用户拥有的优惠券
+     */
+    @RequestMapping("/findUserCouponByUserId")
+    public JsonResult<List<Coupon>> findUserCouponByUserId(@RequestParam Integer userId){
+        List<Coupon> data = userService.findUserCouponByUserId(userId);
+        return  new JsonResult<>(OK,data);
     };
 }
