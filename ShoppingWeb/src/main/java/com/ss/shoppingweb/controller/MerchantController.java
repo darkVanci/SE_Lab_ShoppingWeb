@@ -298,5 +298,19 @@ public class MerchantController extends BaseController {
         return new JsonResult<>(OK, data);
     }
 
+    /**查询目前正在举行的活动*/
+    @RequestMapping("/getActivitiesNow")
+    public JsonResult<List<Activity>> getActivitiesNow(){
+       List<Activity> data = merchantService.getActivitiesNow();
+        return new JsonResult<>(OK,data);
+    };
+
+    /**对指定id的商品申请参加指定id的活动*/
+    @RequestMapping("/getInActivity")
+    public JsonResult<String> getInActivity(@RequestParam Integer commodityId,@RequestParam Integer activityId){
+        String data = merchantService.getInActivity(commodityId,activityId);
+        return new JsonResult<>(OK,data);
+    };
+
 
 }

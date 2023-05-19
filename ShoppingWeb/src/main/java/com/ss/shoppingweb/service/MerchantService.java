@@ -3,6 +3,7 @@ package com.ss.shoppingweb.service;
 import com.ss.shoppingweb.entity.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,4 +87,10 @@ public interface MerchantService {
 
     /**根据商店ID查询修改记录总数*/
     Integer getTotalNumOfFixRecord(Integer shopId);
+
+    /**查询目前正在举行的活动*/
+    List<Activity> getActivitiesNow();
+
+    /**对指定id的商品申请参加指定id的活动*/
+    String getInActivity(Integer commodityId,Integer activityId);
 }

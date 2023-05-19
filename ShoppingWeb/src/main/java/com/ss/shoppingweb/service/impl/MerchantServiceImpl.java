@@ -432,6 +432,24 @@ public class MerchantServiceImpl implements MerchantService {
         return  merchantMapper.getTotalNumOfFixRecord(shopId);
     };
 
+    /**查询目前正在举行的活动*/
+    public List<Activity> getActivitiesNow(){
+        return  merchantMapper.getActivitiesNow();
+    };
+
+    /**对指定id的商品申请参加指定id的活动*/
+    public String getInActivity(Integer commodityId,Integer activityId) {
+        ;
+        List<Commodity> commodities = merchantMapper.getCommodityApplyActivity(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
+        if (commodities.get(0).getActivityId() == activityId) {
+            merchantMapper.getInActivity(commodityId, activityId);
+            return "成功参加活动";
+        }
+        else{
+            return  "一个商店只可参加一个活动";
+        }
+    }
+
 
 
 

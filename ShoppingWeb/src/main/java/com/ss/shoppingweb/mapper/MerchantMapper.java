@@ -210,6 +210,17 @@ public interface MerchantMapper {
     @Select("select count(*) from fixrecord where shopId = #{shopId}")
     Integer getTotalNumOfFixRecord(Integer shopId);
 
+    /**查询目前正在举行的活动*/
+    @Select("select * from activity ")
+    List<Activity> getActivitiesNow();
+
+    /**对指定id的商品申请参加指定id的活动*/
+    @Update("update commodity set activityId = #{activityId}, activityState = #{0} where id = #{commodityId}")
+    Integer getInActivity(Integer commodityId,Integer activityId);
+
+    /**查询该商店已经申请过活动的商品*/
+    @Select("select * from commodity where shopId = #{shopId} and activityId != 0")
+    List<Commodity> getCommodityApplyActivity(Integer shopId);
 }
 
 
