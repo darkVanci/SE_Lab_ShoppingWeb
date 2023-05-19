@@ -219,7 +219,7 @@ public interface MerchantMapper {
     Integer updateDeliveryStateByOrderId(Integer orderId);
 
     /**获取退款退货订单*/
-    @Select("Select * from orders where shopId=#{shopId} and payState=1 and finishState=0 and refundRequest=1")
+    @Select("Select * from orders where shopId=#{shopId} and payState=1 and finishState=0 and refundRequest=1 and refundState=0")
     List<Orders> getShopRefundOrdersByShopId(Integer shopId);
 
     /**修改订单退款状态*/
