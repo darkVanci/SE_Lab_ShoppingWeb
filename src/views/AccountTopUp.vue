@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <div>
     <el-header>
       <el-menu mode="horizontal" :ellipsis="false" router>
         <el-menu-item index="/">首页</el-menu-item>
@@ -14,7 +14,7 @@
       <h1>余额：{{ balance }}</h1>
       <el-button style="margin-top: 10px; width: 80px; height: 50px" @click="topup">充值</el-button>
     </el-main>
-  </el-container>
+  </div>
 </template>
 
 <script>
