@@ -190,4 +190,69 @@ public interface AdminMapper {
     /**插入中间账户数据*/
     @Insert("Insert into middleaccountrecorder (initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
     Integer insertMiddleAccountRecorder(MiddleAccountRecorder middleAccountRecorder);
+
+    /**
+     * 管理员发布优惠券
+     */
+    @Select("Select * from coupon where userId=#{userId}")
+    List<Coupon> findUserCouponByUserId(Integer userId);
+
+
+    /**管理员发起活动*/
+    @Insert("INSERT INTO activity (holdingDays,beginDateTime,endDateTime,funds,commodityCategories,x,y,fundsLimit,monthlySalesMoneyLimit,monthlySalesCountLimit) VALUES (#{holdingDays},#{beginDateTime},#{endDateTime},#{funds},#{commodityCategories},#{x},#{y},#{fundsLimit},#{monthlySalesMoneyLimit},#{monthlySalesCountLimit})")
+    Integer holdActivity(Activity activity);
+
+
+    /**活动结束，所有参与该活动的商品结束参与活动状态*/
+
+    @Update("update commodity set activityId = 0 , activityState = 0 where activityId = #{activityId} ")
+    Integer activityOverAffectCommodity(Integer activityId);
+
+    /**活动结束，活动删除*/
+
+    @Update("DELETE from activity where id = #{activityId} ")
+    Integer activityOver(Integer activityId);
+
+    /**查看指定活动所有待审核的申请*/
+    @Select("Select * from commodity where activityId = #{activityId}, activityState = #{0}")
+    List<Commodity> findAllCommoditiesWaitingToBeReviewedByActivityId(Integer activityId);
+
+    /**对指定商品批准参加活动*/
+    @Update("update commodity set activityState = 1 where id=#{id} ")
+    Integer allowInActivity(Integer id);
+
+    /**对指定商品驳回参加活动*/
+    @Update("update commodity set activityId = 0 where id=#{id} ")
+    Integer refuseInActivity(Integer id);
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

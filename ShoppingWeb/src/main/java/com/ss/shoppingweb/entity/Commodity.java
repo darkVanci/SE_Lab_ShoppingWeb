@@ -18,4 +18,6 @@ public class Commodity extends CommodityBase {
     private int businessState;//商品营业状态： 1表示商品正常上架中，-1表示下架
     private LocalDateTime listTime;//上架的时间
     private LocalDateTime fixTime;//最后一次修改的时间
+    private Integer activityId;//所参与活动的id，为0或空代表不参加任何活动
+    private Integer activityState;//该商品参与活动的申请状态，为0表示未通过，为1表示通过
 }

@@ -164,4 +164,32 @@ public class AdminController extends BaseController{
         List<MiddleAccountRecorder> data=adminService.getMiddleAccountRecorder(timeInterval);
         return new JsonResult<>(OK,data);
     }
+
+    /**管理员发起活动*/
+    @RequestMapping("/holdActivity")
+    public JsonResult<Void> holdActivity(@RequestBody Activity activity){
+        adminService.holdActivity(activity);
+        return new JsonResult<Void>(OK);
+    };
+
+    /**查看指定活动所有待审核的申请*/
+    @RequestMapping("/findAllCommoditiesWaitingToBeReviewedByActivityId")
+    public JsonResult<List<Commodity>> findAllCommoditiesWaitingToBeReviewedByActivityId(@RequestParam Integer activityId){
+        List<Commodity> data = adminService.findAllCommoditiesWaitingToBeReviewedByActivityId(activityId);
+        return new JsonResult<>(OK,data);
+    };
+
+    /**对指定商品批准参加活动*/
+    @RequestMapping("/allowInActivity")
+    public JsonResult<Void> allowInActivity(@RequestParam Integer id){
+        adminService.allowInActivity(id);
+        return new JsonResult<Void>(OK);
+    };
+
+    /**对指定商品驳回参加活动*/
+    @RequestMapping("/refuseInActivity")
+    public JsonResult<Void> refuseInActivity(@RequestParam Integer id){
+        adminService.refuseInActivity(id);
+        return new JsonResult<Void>(OK);
+    };
 }

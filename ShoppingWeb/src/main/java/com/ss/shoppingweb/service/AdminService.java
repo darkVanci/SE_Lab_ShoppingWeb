@@ -2,6 +2,8 @@ package com.ss.shoppingweb.service;
 
 import com.ss.shoppingweb.entity.*;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.io.IOException;
@@ -69,4 +71,16 @@ public interface AdminService {
 
     /**展示出数据库中所有修改待审核的商品*/
     List<CommodityFixed> showAllCommodityFixedToBeReviewed() throws IOException;
+
+    /**管理员发起活动*/
+    void holdActivity(Activity activity);
+
+    /**查看指定活动所有待审核的申请*/
+    List<Commodity> findAllCommoditiesWaitingToBeReviewedByActivityId(Integer activityId);
+
+    /**对指定商品批准参加活动*/
+    void allowInActivity(Integer id);
+
+    /**对指定商品驳回参加活动*/
+    void refuseInActivity(Integer id);
 }

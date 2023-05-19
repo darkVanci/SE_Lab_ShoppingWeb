@@ -26,18 +26,22 @@ public interface UserService {
     UserAccount getAccount(String name);
 
     //账户充值
-    void rechargeAccount(Integer OwnerId,double amount);
+    void rechargeAccount(Integer OwnerId, double amount);
 
     //获取流水记录
-    List<UserAccountRecorder> getAccountRecorder(Integer id,Integer timeInterval);
+    List<UserAccountRecorder> getAccountRecorder(Integer id, Integer timeInterval);
 
     //将商品添加到购物车
     void addToShoppingCart(ShoppingCart shoppingCart);
 
-    /**将购物车中指定商品数量加1*/
+    /**
+     * 将购物车中指定商品数量加1
+     */
     void addShoppingCartCommodityNumber(Integer id);
 
-    /**将购物车中指定商品数量减1*/
+    /**
+     * 将购物车中指定商品数量减1
+     */
     void subShoppingCartCommodityNumber(Integer id);
 
     //展示购物车信息
@@ -46,19 +50,29 @@ public interface UserService {
     //删除商品
     void deleteShoppingcart(List<Integer> ids);
 
-    /**根据用户id查找收货地址*/
+    /**
+     * 根据用户id查找收货地址
+     */
     List<ShippingAddress> findUserShippingAddressByUserId(Integer userId);
 
-    /**新建收货地址*/
+    /**
+     * 新建收货地址
+     */
     void addShippingAddress(ShippingAddress shippingAddress);
 
-    /**删除收货地址*/
+    /**
+     * 删除收货地址
+     */
     void deleteShippingAddress(Integer id);
 
-    /**修改收货地址*/
+    /**
+     * 修改收货地址
+     */
     void updateShippingAddress(ShippingAddress shippingAddress);
 
-    /**根据收货地址id查找收货地址*/
+    /**
+     * 根据收货地址id查找收货地址
+     */
     ShippingAddress findUserShippingAddressById(Integer id);
 
     /**创建订单*/
@@ -102,4 +116,8 @@ public interface UserService {
 
     /**确认收货*/
     void confirmFinishOrders(Integer orderId);
+    /**
+     * 根据用户id查找该用户拥有的优惠券
+     */
+    List<Coupon> findUserCouponByUserId(Integer userId);
 }

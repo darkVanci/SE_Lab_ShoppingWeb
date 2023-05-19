@@ -437,4 +437,32 @@ public class AdminServiceImpl implements AdminService {
         }
         return commodityFixeds;
     }
+
+    /**管理员发起活动*/
+    public void holdActivity(Activity activity){
+        LocalDateTime beginDateTime = LocalDateTime.now();
+        LocalDateTime endDateTime = beginDateTime.plusDays(activity.getHoldingDays());
+        activity.setBeginDateTime(beginDateTime);
+        activity.setEndDateTime(endDateTime);
+        adminMapper.holdActivity(activity);
+
+    };
+
+    /**查看指定活动所有待审核的申请*/
+    public List<Commodity> findAllCommoditiesWaitingToBeReviewedByActivityId(Integer activityId ){
+        return  adminMapper.findAllCommoditiesWaitingToBeReviewedByActivityId(activityId);
+    };
+
+
+    /**对指定商品批准参加活动*/
+    public void allowInActivity(Integer id){
+        adminMapper.allowInActivity(id);
+
+    };
+
+    /**对指定商品驳回参加活动*/
+    public void refuseInActivity(Integer id){
+        adminMapper.refuseInActivity(id);
+   }
 }
+

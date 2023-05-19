@@ -4,6 +4,7 @@ import com.ss.shoppingweb.entity.*;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.io.IOException;
 import java.util.List;
@@ -99,4 +100,9 @@ public interface MerchantService {
 
     /**同意退款退货*/
     void agreeRefund(Integer orderId);
+    /**查询目前正在举行的活动*/
+    List<Activity> getActivitiesNow();
+
+    /**对指定id的商品申请参加指定id的活动*/
+    String getInActivity(Integer commodityId,Integer activityId);
 }

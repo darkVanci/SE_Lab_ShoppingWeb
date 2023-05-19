@@ -285,6 +285,13 @@ public class UserServiceImpl implements UserService {
             throw new InsertException("向数据库中导入订单信息出错，请联系系统管理员！");
         }
     }
+    /**
+     * 根据用户id查找该用户拥有的优惠券
+     */
+    public List<Coupon> findUserCouponByUserId(Integer userId){
+        return  userMapper.findUserCouponByUserId(userId);
+    };
+
 
     /**判断用户余额是否充足*/
     public void judgeUserAccount(Integer userId,List<Orders> orders){

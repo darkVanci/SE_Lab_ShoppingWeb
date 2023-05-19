@@ -22,6 +22,7 @@ public class Shop {
     private double funds;//注册资金
     private String registerdate;//注册日期
     private Integer state;//店铺状态——待审核：0、正常营业：1、请求关店：-1
-
+    private Double monthlySalesMoney;//月销售额度
+    private Integer monthlySalesCount;//月销售量
 
 }
