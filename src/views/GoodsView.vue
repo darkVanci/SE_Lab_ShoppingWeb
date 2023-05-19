@@ -39,7 +39,10 @@
                     <tr>
                         <td>购买件数</td>
                         <td><el-input-number v-model="num" @change="handleChange" :min="1" :max="10000"
-                                label="描述文字"></el-input-number></td>
+                                label="描述文字"></el-input-number>
+                            <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="primary" plain
+                                @click="addtocart(goodsInf.id, num)">加入购物车</el-button>
+                        </td>
                     </tr>
                     <tr>
                         <td>总价</td>
@@ -57,11 +60,51 @@ export default {
         return {
             goodsInf: [],
             images: [],
-            num: 2,
+            num: 1,
+            inf: [],
+            username: '',
+            character: '',
+            isLogged: false,
+            isMerchant: false,
+            isAdmin: false,
         }
     },
     mounted() {
         const token = localStorage.getItem('token')
+        //获取用户信息
+        this.$axios
+            .get('/getData', {
+                headers: {
+                    token: `${token}`
+                }
+            })
+            .then((response) => {
+                console.log(response.data)
+                this.inf = response.data
+                console.log(this.inf)
+                if (this.inf.state == 200) {
+                    this.username = this.inf.data.name
+                    console.log(this.username)
+                    this.isLogged = true
+                    this.character = this.inf.message
+                    console.log(this.character)
+                    if (this.character == 2) {
+                        this.isMerchant = true
+                    } else {
+                        this.isMerchant = false
+                    }
+                    if (this.character == 3) {
+                        this.isAdmin = true
+                    } else {
+                        this.isAdmin = false
+                    }
+                } else {
+                    this.isLogged = false
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         //获取商品信息
         this.$axios
             .post(
@@ -84,6 +127,35 @@ export default {
             })
     },
     methods: {
+        addtocart(goodId, num) {
+            const token = localStorage.getItem('token')
+            this.$axios
+                .post(
+                    '/user/addToShoppingCart',
+                    {
+                        // shopId: this.goodsInf.shopId,//后端直接传shopId即可
+                        userId: this.inf.data.id,
+                        commodityId: goodId,
+                        commodityNum: num
+                    },
+                    {
+                        headers: {
+                            token: `${token}`
+                        }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    if (response.data.state == 200) {
+                        this.$message.success('加入购物车成功')
+                    } else {
+                        this.$message.error(response.data.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
         goBack() {
             this.$router.go(-1);
         },

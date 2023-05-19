@@ -23,10 +23,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(product, index) in products" :key="index">
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.store }}</td>
+                    <tr v-for="(product, index) in selectedRows" :key="index">
+                        <td>{{ product.commodityName }}</td>
+                        <td>{{ product.commodityNum }}</td>
+                        <td>{{ product.businessName }}</td>
                         <td>{{ product.price }}</td>
                         <td>{{ product.note }}</td>
                     </tr>
@@ -118,11 +118,15 @@ export default {
             coupons: ['优惠券1', '优惠券2', '优惠券3'],
             selectedCoupon: '',
             discounts: [],
+            selectedRows: []
         };
+    },
+    mounted() {
+        this.selectedRows = JSON.parse(localStorage.getItem('selectedRows'));
     },
     computed: {
         totalPrice() {
-            return this.products.reduce((total, product) => total + product.quantity * product.price, 0);
+            return this.selectedRows.reduce((total, product) => total + product.commodityNum * product.price, 0);
         },
         finalPrice() {
             return this.totalPrice - this.discounts.reduce((total, discount) => total + discount.amount, 0);

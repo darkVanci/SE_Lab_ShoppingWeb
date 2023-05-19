@@ -110,7 +110,7 @@ const router = createRouter({
     {
       path: '/orderpage',
       name: 'orderpage',
-      component: () => import('../views/OrderPage.vue')
+      component: () => import('../views/OrderPage.vue'),
     },
     {
       path: '/paymentpage',

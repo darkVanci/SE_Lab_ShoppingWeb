@@ -34,7 +34,7 @@
               <img :src="'data:image/png;base64,' + good.imageString[0]"
                 :style="{ maxHeight: '200px', maxWidth: '200px' }" />
             </div>
-            {{ good.price }}元
+            {{ good.price }} 元
             <br />
             <el-input-number v-model="good.businessState" v-if="isLogged && !isMerchant && !isAdmin"
               @change="handleChange" size="small" :min="1" :max="100" label="描述文字"></el-input-number>
@@ -151,6 +151,11 @@ export default {
         )
         .then((response) => {
           console.log(response.data)
+          if (response.data.state == 200) {
+            this.$message.success('加入购物车成功')
+          } else {
+            this.$message.error(response.data.message)
+          }
         })
         .catch((error) => {
           console.log(error)
