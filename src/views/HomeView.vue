@@ -1,47 +1,53 @@
 <template>
-  <div class="home">
-    <el-container>
-      <el-header>
-        <!-- 导航 -->
-        <el-menu mode="horizontal" :ellipsis="false" router default-active="/">
-          <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/register" v-if="!isLogged">注册</el-menu-item>
-          <el-menu-item index="/login" v-if="!isLogged">登录</el-menu-item>
-          <el-menu-item index="/accountuser" v-if="isLogged">用户中心</el-menu-item>
-          <el-menu-item index="/shoppingcart" v-if="isLogged && !isMerchant && !isAdmin">购物车
-          </el-menu-item>
-          <el-menu-item index="/setup" v-if="isLogged && isMerchant">开店</el-menu-item>
-          <el-menu-item index="/backstage" v-if="isLogged && isAdmin">后台</el-menu-item>
-          <el-menu-item index="/shopmanager" v-if="isLogged && isMerchant">商店管理</el-menu-item>
-          <div class="flex-grow"></div>
-          <el-sub-menu v-if="isLogged" index="1">
-            <template #title>你好，{{ username }}😊</template>
-            <el-menu-item>余额 {{ balance }}</el-menu-item>
-          </el-sub-menu>
-          <el-menu-item index="/login" v-else>请登录😢</el-menu-item>
-          <el-menu-item v-if="isLogged" @mousedown="logout">登出</el-menu-item>
-        </el-menu>
-      </el-header>
-      <el-main>
-        <h2>商店列表</h2>
-        <!-- <el-slider v-model="size" style="width: 500px" /> -->
-        <el-space wrap>
-          <el-card v-for="shop in shops" :key="shop.id" class="box-card" style="width: 250px">
-            <template #header>
-              <div class="card-header">
-                <b>{{ shop.shopName }}</b>
-                <el-button class="button" text type="primary" plain @click="entershop(shop.id)">进入
-                </el-button>
-              </div>
-            </template>
-            {{ shop.category }}
-            <br />
-            <br />
-            <div class="textarea">{{ shop.introduction }}</div>
-          </el-card>
-        </el-space>
-      </el-main>
-    </el-container>
+  <div class="body">
+    <div class="container1">
+      <div class="wrap">
+        <div class="nav-bar">
+          <!-- 导航 -->
+          <el-menu mode="horizontal" :ellipsis="false" router default-active="/">
+            <el-menu-item index="/" class="menu-item">首页</el-menu-item>
+            <el-menu-item index="/register" v-if="!isLogged" class="menu-item">注册</el-menu-item>
+            <el-menu-item index="/login" v-if="!isLogged" class="menu-item">登录</el-menu-item>
+            <el-menu-item index="/accountuser" v-if="isLogged" class="menu-item">用户中心</el-menu-item>
+            <el-menu-item index="/shoppingcart" v-if="isLogged && !isMerchant && !isAdmin" class="menu-item"
+            >购物车
+            </el-menu-item
+            >
+            <el-menu-item index="/setup" v-if="isLogged && isMerchant" class="menu-item">开店</el-menu-item>
+            <el-menu-item index="/backstage" v-if="isLogged && isAdmin" class="menu-item">后台</el-menu-item>
+            <el-menu-item index="/shopmanager" v-if="isLogged && isMerchant" class="menu-item">商店管理</el-menu-item>
+            <div class="flex-grow"></div>
+            <el-sub-menu v-if="isLogged" index="1">
+              <template #title>你好，{{ username }}😊</template>
+              <el-menu-item>余额 {{ balance }}</el-menu-item>
+            </el-sub-menu>
+            <el-menu-item index="/login" v-else>请登录😢</el-menu-item>
+            <el-menu-item v-if="isLogged" @mousedown="logout">登出</el-menu-item>
+          </el-menu>
+        </div>
+        <el-main
+        ><h2>商店列表</h2>
+          <!-- <el-slider v-model="size" style="width: 500px" /> -->
+          <el-space wrap>
+            <el-card v-for="shop in shops" :key="shop.id" class="box-card" style="width: 250px">
+              <template #header>
+                <div class="card-header">
+                  <b>{{ shop.shopName }}</b>
+                  <el-button class="button" text type="primary" plain @click="entershop(shop.id)"
+                  >进入
+                  </el-button
+                  >
+                </div>
+              </template>
+              {{ shop.category }}
+              <br/>
+              <br/>
+              <div class="textarea">{{ shop.introduction }}</div>
+            </el-card>
+          </el-space>
+        </el-main>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -143,6 +149,18 @@ export default {
 </script>
 
 <style scoped>
+.body {
+  font-family: 'Microsoft YaHei';
+  box-sizing: border-box;
+}
+
+.wrap{
+  width: 80vw;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
 .flex-grow {
   flex-grow: 1;
 }

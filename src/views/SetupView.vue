@@ -1,81 +1,87 @@
 <template>
-  <div class="setup">
-    <div class="background">
-      <div class="form-container">
-        <div class="go-back">
-          <router-link to="/"><img src="../assets/image/img_83238.png" /></router-link>
-        </div>
-        <div class="input-container">
-          <h1>商户开店</h1>
-          <el-form size="large" label-width="auto">
-            <el-form-item label="店名">
-              <el-input v-model="shopname" @blur="shopnameBlur()" required>店名</el-input>
-              <div>{{ shopname.length }} &le; 12 &nbsp;&nbsp;</div>
-              <div id="shopname_err" class="err_msg" v-show="!shopnameFlag">店名格式错误</div>
-            </el-form-item>
-            <el-form-item label="活动性质">
-              <el-checkbox-group v-model="types">
-                <el-checkbox label="百货" name="type"></el-checkbox>
-                <el-checkbox label="图书" name="type"></el-checkbox>
-                <el-checkbox label="服装" name="type"></el-checkbox>
-                <el-checkbox label="食品" name="type"></el-checkbox>
-                <el-checkbox label="家电" name="type"></el-checkbox>
-                <el-checkbox label="电脑" name="type"></el-checkbox>
-                <el-checkbox label="手机" name="type"></el-checkbox>
-                <el-checkbox label="数码" name="type"></el-checkbox>
-                <el-checkbox label="二手" name="type"></el-checkbox>
-                <el-checkbox label="奢侈" name="type"></el-checkbox>
-                <el-checkbox label="其他" name="type"></el-checkbox>
-              </el-checkbox-group>
-              <div id="types_err" class="err_msg" v-show="this.types.length == 0">
-                &nbsp;&nbsp;&nbsp;至少选1项
-              </div>
-            </el-form-item>
+  <div class="body">
+    <div class="container">
+      <div class="form-box">
+        <h1 id="header">商户开店</h1>
+        <el-form size="large" label-width="auto">
+          <el-form-item label="店名">
+            <el-input v-model="shopname" @blur="shopnameBlur()" required>店名</el-input>
+            <div>{{ shopname.length }} &le; 12 &nbsp;&nbsp;</div>
+            <div id="shopname_err" class="err_msg" v-show="!shopnameFlag">店名格式错误</div>
+          </el-form-item>
+          <el-form-item label="活动性质">
+            <el-checkbox-group v-model="types">
+              <el-checkbox label="百货" name="type"></el-checkbox>
+              <el-checkbox label="图书" name="type"></el-checkbox>
+              <el-checkbox label="服装" name="type"></el-checkbox>
+              <el-checkbox label="食品" name="type"></el-checkbox>
+              <el-checkbox label="家电" name="type"></el-checkbox>
+              <el-checkbox label="电脑" name="type"></el-checkbox>
+              <el-checkbox label="手机" name="type"></el-checkbox>
+              <el-checkbox label="数码" name="type"></el-checkbox>
+              <el-checkbox label="二手" name="type"></el-checkbox>
+              <el-checkbox label="奢侈" name="type"></el-checkbox>
+              <el-checkbox label="其他" name="type"></el-checkbox>
+            </el-checkbox-group>
+            <div id="types_err" class="err_msg" v-show="this.types.length == 0">
+              &nbsp;&nbsp;&nbsp;至少选1项
+            </div>
+          </el-form-item>
 
-            <el-form-item label="身份证号">
-              <el-input v-model="identity" @blur="identityBlur()" required>身份证号</el-input>
-              <div id="identity_err" class="err_msg" v-show="!identityFlag">身份证号格式错误</div>
-            </el-form-item>
-            <el-form-item label="商店简介">
-              <el-input
+          <el-form-item label="身份证号">
+            <el-input v-model="identity" @blur="identityBlur()" required>身份证号</el-input>
+            <div id="identity_err" class="err_msg" v-show="!identityFlag">身份证号格式错误</div>
+          </el-form-item>
+          <el-form-item label="商店简介">
+            <el-input
                 type="textarea"
                 v-model="description"
                 @blur="descriptionBlur()"
                 required
-              ></el-input>
-              <div>{{ description.length }} &le; 128 &nbsp;&nbsp;</div>
-              <div id="description_err" class="err_msg" v-show="!descriptionFlag">
-                商店简介格式错误
-              </div>
-            </el-form-item>
-            <el-form-item label="备案地址">
-              <el-input type="textarea" v-model="address" @blur="addressBlur()" required></el-input>
-              <div>{{ address.length }} &le; 32 &nbsp;&nbsp;</div>
-              <div id="address_err" class="err_msg" v-show="!addressFlag">备案地址格式错误</div>
-            </el-form-item>
-            <el-form-item label="注册资金">
-              <el-input type="textarea" v-model="double" @blur="doubleBlur()" required></el-input>
-              <div>&gt; 1000 &nbsp;&nbsp;</div>
-              <div id="double_err" class="err_msg" v-show="!doubleFlag">注册资金金额错误</div>
-            </el-form-item>
-            <el-form-item label="注册时间">
-              <el-col :span="11">
-                <el-date-picker
+            ></el-input>
+            <div>{{ description.length }} &le; 128 &nbsp;&nbsp;</div>
+            <div id="description_err" class="err_msg" v-show="!descriptionFlag">
+              商店简介格式错误
+            </div>
+          </el-form-item>
+          <el-form-item label="备案地址">
+            <el-input type="textarea" v-model="address" @blur="addressBlur()" required></el-input>
+            <div>{{ address.length }} &le; 32 &nbsp;&nbsp;</div>
+            <div id="address_err" class="err_msg" v-show="!addressFlag">备案地址格式错误</div>
+          </el-form-item>
+          <el-form-item label="注册资金">
+            <el-input type="textarea" v-model="double" @blur="doubleBlur()" required></el-input>
+            <div>&gt; 1000 &nbsp;&nbsp;</div>
+            <div id="double_err" class="err_msg" v-show="!doubleFlag">注册资金金额错误</div>
+          </el-form-item>
+          <el-form-item label="注册时间">
+            <el-col :span="11">
+              <el-date-picker
                   v-model="date"
                   type="date"
                   placeholder="请选一天"
                   value-format="YYYY-MM-DD"
                   style="width: 100%"
-                />
-              </el-col>
-            </el-form-item>
+              />
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <div class="button-field1-col1">
+            <el-button type="primary" @click="setup" class="setup-button">申请开店</el-button>
+            </div>
+            <div class="button-field1-col2">
+            <el-button @click="cancel" class="cancel-button">取消</el-button>
+            </div>
+          </el-form-item>
+          <router-link to="/" style="text-decoration: none">
             <el-form-item>
-              <el-button type="primary" @click="setup">申请开店</el-button>
-              <el-button @click="cancel">取消</el-button>
+              <div class="button-field2">
+                <el-button type="success" class="return-button">返回</el-button>
+              </div>
             </el-form-item>
-            <div class="err_msg">{{ message }}</div>
-          </el-form>
-        </div>
+          </router-link>
+          <div class="err_msg">{{ message }}</div>
+        </el-form>
       </div>
     </div>
   </div>
@@ -239,26 +245,13 @@ export default {
 </script>
 
 <style scoped>
+.body {
+  font-family: 'Microsoft YaHei';
+  box-sizing: border-box;
+}
+
 .err_msg {
   color: red;
-}
-
-.background {
-  width: 100%;
-  height: 100%;
-  background-image: url('../assets/image/gradient-1.jpg');
-  position: fixed;
-  background-size: cover;
-}
-
-.form-container {
-  width: 90%;
-  height: 90%;
-  background-color: white;
-  border-radius: 30px;
-  position: relative;
-  top: 2%;
-  left: 5%;
 }
 
 .go-back img {
@@ -268,11 +261,78 @@ export default {
   height: 50px;
 }
 
-.input-container {
+.container {
+  background: linear-gradient(rgba(0, 0, 50, 0.8), rgba(0, 0, 50, 0.8));
+  width: 100%;
+  height: 100vh;
+}
+
+.form-box {
+  width: 90%;
+  height: auto;
+  max-width: 1200px;
   position: absolute;
-  width: 80%;
-  height: 90%;
-  top: 2%;
-  left: 10%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px 60px 70px 60px;
+  background: #fff;
+  text-align: center;
+}
+
+.form-box h1 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 60px;
+  color: #3c00a0;
+  position: relative;
+}
+
+.form-box h1:after {
+  content: '';
+  width: 30px;
+  height: 4px;
+  border-radius: 3px;
+  background-color: #3c00a0;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+.button-field1-col1 {
+  width: 50%;
+}
+
+.button-field1-col2 {
+  width: 50%;
+}
+
+.setup-button {
+  background-color: #3c00a0;
+  width: 70%;
+}
+
+.cancel-button {
+  width: 70%;
+}
+
+.button-field2 {
+  width: 50%;
+  margin: 0 auto;
+}
+
+
+.return-button {
+  width: 100%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.form-box p {
+  text-align: left;
+  font-size: 17px;
 }
 </style>
