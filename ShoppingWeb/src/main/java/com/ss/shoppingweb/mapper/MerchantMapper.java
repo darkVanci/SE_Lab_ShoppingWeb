@@ -135,7 +135,7 @@ public interface MerchantMapper {
     @Insert("Insert into middleaccountrecorder (initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
     Integer InsertMiddleAccountRecorder(MiddleAccountRecorder middleAccountRecorder);
     /**新增商品信息*/
-    @Insert("INSERT INTO commodity (shopId,categoryName,commodityName,introduction,price,applyState,businessState,listTime,fixTime,imageUrl) VALUES (#{shopId}, #{categoryName},#{commodityName},#{introduction},#{price},#{applyState},#{businessState},#{listTime},#{fixTime},#{imageUrl}) ")
+    @Insert("INSERT INTO commodity (shopId,categoryName,commodityName,introduction,price,applyState,businessState,listTime,fixTime,imageUrl,activityId,activityState) VALUES (#{shopId}, #{categoryName},#{commodityName},#{introduction},#{price},#{applyState},#{businessState},#{listTime},#{fixTime},#{imageUrl},#{activityId},#{activityState}) ")
     Integer addCommodity(Commodity commodity);
 
     /**产生一条上架记录*/

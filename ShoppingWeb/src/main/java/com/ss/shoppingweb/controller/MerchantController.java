@@ -158,6 +158,8 @@ public class MerchantController extends BaseController {
         commodity.setIntroduction(introduction);
         commodity.setPrice(price);
         commodity.setCategoryName(categoryName);
+        commodity.setActivityId(0);
+        commodity.setActivityState(0);
         merchantService.addCommodity(commodity);
         return new JsonResult<>(OK);
     }

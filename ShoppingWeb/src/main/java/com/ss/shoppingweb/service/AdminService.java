@@ -1,10 +1,7 @@
 package com.ss.shoppingweb.service;
 
 import com.ss.shoppingweb.entity.*;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+
 
 import java.io.IOException;
 import java.util.List;

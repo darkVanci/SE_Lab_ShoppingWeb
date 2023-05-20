@@ -1,7 +1,6 @@
 package com.ss.shoppingweb.service.impl;
 
 import com.ss.shoppingweb.entity.*;
-import com.ss.shoppingweb.exception.CannotDeleteException;
 import com.ss.shoppingweb.mapper.AdminMapper;
 import com.ss.shoppingweb.service.AdminService;
 import com.ss.shoppingweb.exception.InsertException;
@@ -57,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
             shopHint.setRegisterdate(shop.getRegisterdate());
             shopHint.setState(shop.getState());
             //查找购物车
-            List<ShopOrder> shoppingCarts=adminMapper.findShopOrderByShopId(shop.getId());
+            List<Orders> shoppingCarts=adminMapper.findOrdersByShopId(shop.getId());
             if(shoppingCarts.size()!=0){
                 shopHint.setStateHint(4007);
                 shopHint.setMessageHint("有商品订单尚未完成，不能删除商店！");
@@ -441,11 +440,44 @@ public class AdminServiceImpl implements AdminService {
     public String holdActivity(Activity activity) {
         /**获取商场利润账户的数据*/
         AdminAccount adminAccount = adminMapper.findAdminAccountByOwnerId(1);
+        MiddleAccount middleAccount=adminMapper.findMiddleAccountById(1);
         /**判断资金是否足够开启活动*/
         if(adminAccount.getAmount()>=activity.getFunds()) {
             /**进行转账*/
             adminMapper.updateAccount(adminAccount.getAmount()-activity.getFunds(),1);
-            adminMapper.updateMiddleAccount(adminAccount.getAmount()+activity.getFunds(),1);
+            adminMapper.updateMiddleAccount(middleAccount.getAmount()+activity.getFunds(),1);
+            /**转账流水记录*/
+            MiddleAccountRecorder middleAccountRecorder=new MiddleAccountRecorder();
+            middleAccountRecorder.setInitiatorRole(5);
+            middleAccountRecorder.setInitiatorId(1);
+            middleAccountRecorder.setInitiatorName("商城利润账户");
+            middleAccountRecorder.setReceiverRole(4);
+            middleAccountRecorder.setReceiverId(1);
+            middleAccountRecorder.setReceiverName("商城中间账户");
+            middleAccountRecorder.setAmount(activity.getFunds());
+            middleAccountRecorder.setTradeTime(LocalDateTime.now());
+            middleAccountRecorder.setTradeRecord("活动补贴资金");
+            middleAccountRecorder.setInAndout(1);
+            Integer rows1=adminMapper.insertMiddleAccountRecorder(middleAccountRecorder);
+            if(rows1!=1){
+                throw new InsertException("导入中间商城流水记录失败，请联系系统管理员！");
+            }
+            AdminAccountRecorder adminAccountRecorder=new AdminAccountRecorder();
+            adminAccountRecorder.setAdminId(1);
+            adminAccountRecorder.setInitiatorRole(5);
+            adminAccountRecorder.setInitiatorId(1);
+            adminAccountRecorder.setInitiatorName("商城利润账户");
+            adminAccountRecorder.setReceiverRole(4);
+            adminAccountRecorder.setReceiverId(1);
+            adminAccountRecorder.setReceiverName("商城中间账户");
+            adminAccountRecorder.setAmount(activity.getFunds());
+            adminAccountRecorder.setTradeTime(LocalDateTime.now());
+            adminAccountRecorder.setTradeRecord("活动补贴资金");
+            adminAccountRecorder.setInAndout(-1);
+            Integer rows2=adminMapper.insertAdminAccountRecorder(adminAccountRecorder);
+            if(rows2!=1){
+                throw new InsertException("导入商城利润账户流水记录失败，请联系系统管理员！");
+            }
             /**完善数据*/
             LocalDateTime beginDateTime = LocalDateTime.now();
             LocalDateTime endDateTime = beginDateTime.plusDays(activity.getHoldingDays());

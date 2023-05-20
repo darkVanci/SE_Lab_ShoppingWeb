@@ -75,8 +75,8 @@ public interface AdminMapper {
 
 
     /**根据商店id查询订单*/
-    @Select("Select * from shoporder where shopId=#{shopId} and state=0")
-    List<ShopOrder> findShopOrderByShopId(Integer shopId);
+    @Select("Select * from orders where shopId=#{shopId} and payState=1 and finishState=0")
+    List<Orders> findOrdersByShopId(Integer shopId);
 
 
 
@@ -215,7 +215,7 @@ public interface AdminMapper {
 
     /**活动结束，活动删除*/
 
-    @Update("DELETE from activity where id = #{activityId} ")
+    @Delete("DELETE from activity where id = #{activityId} ")
     Integer activityOver(Integer activityId);
 
     /**查看指定活动所有待审核的申请*/
@@ -237,6 +237,7 @@ public interface AdminMapper {
     /**根据商品ID查询商品信息*/
     @Select("select * from commodity where id = #{id}" )
     Commodity getCommodityDataByCommodityId(Integer id);
+
 }
 
 

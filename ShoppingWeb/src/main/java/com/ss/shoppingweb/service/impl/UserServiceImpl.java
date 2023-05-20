@@ -4,7 +4,6 @@ import com.ss.shoppingweb.entity.*;
 import com.ss.shoppingweb.exception.*;
 import com.ss.shoppingweb.mapper.UserMapper;
 import com.ss.shoppingweb.service.UserService;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -524,6 +522,55 @@ public class UserServiceImpl implements UserService {
         Integer rows8=userMapper.insertShopAccountRecorder(shopAccountRecorder);
         if(rows8!=1){
             throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
+        }
+        //判断满减是否为0，若不为0则将满减金额发给shop
+        if(order.getReducedPrice()!=0){
+            Activity activity=userMapper.getActivityDataById(order.getActivityId());
+            Integer rows9=userMapper.updateActivityFunds(order.getActivityId(),activity.getFunds()-order.getReducedPrice());
+            if(rows9!=1){
+                throw new UpdateException("修改活动补贴资金异常，请联系系统管理员！");
+            }
+            MiddleAccount middleAccount1=userMapper.findMiddleAccount();
+            Integer rows10=userMapper.updateMiddleAccount(middleAccount1.getAmount()-order.getReducedPrice());
+            if(rows10!=1){
+                throw new UpdateException("修改中间商城出错，请联系系统管理员！");
+            }
+            MiddleAccountRecorder middleAccountRecorder3=new MiddleAccountRecorder();
+            middleAccountRecorder3.setInitiatorRole(4);
+            middleAccountRecorder3.setInitiatorId(1);
+            middleAccountRecorder3.setInitiatorName("商城中间账户");
+            middleAccountRecorder3.setReceiverRole(3);
+            middleAccountRecorder3.setReceiverId(order.getShopId());
+            middleAccountRecorder3.setReceiverName(order.getShopName());
+            middleAccountRecorder3.setAmount(order.getReducedPrice());
+            middleAccountRecorder3.setTradeTime(LocalDateTime.now());
+            middleAccountRecorder3.setTradeRecord("活动满减补贴资金");
+            middleAccountRecorder3.setInAndout(-1);
+            Integer rows11=userMapper.insertMiddleAccountRecorder(middleAccountRecorder2);
+            if(rows11!=1){
+                throw new InsertException("导入中间商城流水记录失败，请联系系统管理员！");
+            }
+            ShopAccount shopAccount1=userMapper.findShopAccountByShopId(order.getShopId());
+            Integer rows12=userMapper.updateShopAccount(shopAccount1.getAmount()+order.getReducedPrice(),order.getShopId());
+            if(rows12!=1){
+                throw new UpdateException("修改商店账户失败，请联系系统管理员！");
+            }
+            ShopAccountRecorder shopAccountRecorder1=new ShopAccountRecorder();
+            shopAccountRecorder1.setShopId(order.getShopId());
+            shopAccountRecorder1.setInitiatorRole(4);
+            shopAccountRecorder1.setInitiatorId(1);
+            shopAccountRecorder1.setInitiatorName("商城中间账户");
+            shopAccountRecorder1.setReceiverRole(3);
+            shopAccountRecorder1.setReceiverId(order.getShopId());
+            shopAccountRecorder1.setReceiverName(order.getShopName());
+            shopAccountRecorder1.setAmount(order.getReducedPrice());
+            shopAccountRecorder1.setTradeTime(LocalDateTime.now());
+            shopAccountRecorder1.setTradeRecord("活动满减补贴资金");
+            shopAccountRecorder1.setInAndout(1);
+            Integer rows13=userMapper.insertShopAccountRecorder(shopAccountRecorder);
+            if(rows13!=1){
+                throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
+            }
         }
     }
 

@@ -184,7 +184,7 @@ public interface UserMapper {
     Integer updateShippingAddress(ShippingAddress shippingAddress);
 
     /**新建订单*/
-    @Insert("Insert into orders (userId,shopId,commodityId,userName,shopName,commodityName,commodityPrice,commodityNum,amountSum,purchaseTime,address,payState,withdrawState,deliveryState,finishState,refundRequest,refundState) values (#{userId},#{shopId},#{commodityId},#{userName},#{shopName},#{commodityName},#{commodityPrice},#{commodityNum},#{amountSum},#{purchaseTime},#{address},#{payState},#{withdrawState},#{deliveryState},#{finishState},#{refundRequest},#{refundState})")
+    @Insert("Insert into orders (userId,shopId,commodityId,activityId,userName,shopName,commodityName,commodityPrice,commodityNum,reducedPrice,amountSum,purchaseTime,address,payState,withdrawState,deliveryState,finishState,refundRequest,refundState) values (#{userId},#{shopId},#{commodityId},#{activityId},#{userName},#{shopName},#{commodityName},#{commodityPrice},#{commodityNum},#{reducedPrice},#{amountSum},#{purchaseTime},#{address},#{payState},#{withdrawState},#{deliveryState},#{finishState},#{refundRequest},#{refundState})")
     Integer insertOrders(Orders orders);
 
     /**根据订单编号获取订单*/
@@ -306,12 +306,15 @@ public interface UserMapper {
 
     /**活动结束，活动删除*/
 
-    @Update("DELETE from activity where id = #{activityId} ")
+    @Delete("DELETE from activity where id = #{activityId} ")
     Integer activityOver(Integer activityId);
 
     /**查询某一活动中商品*/
     @Select("select * from commodity where activityId = #{id}")
     List<Commodity> showCommoditiesInOneActivity(Integer id);
+
+    @Update("Update activity set funds=#{funds} where id = #{activityId} ")
+    Integer updateActivityFunds(Integer activityId,double funds);
 }
 
 

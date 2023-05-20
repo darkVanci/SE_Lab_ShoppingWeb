@@ -170,9 +170,11 @@ public class  UserController extends BaseController{
                    order.setAmountSum(order.getAmountSum()-reducedPrice);
                    order.setReducedPrice(reducedPrice);
                }
+               else{
+                   order.setReducedPrice(0);
+               }
            }
        }
-
 
         for(Orders order:orders){
             order.setUserId(userId);
