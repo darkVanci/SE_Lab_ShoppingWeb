@@ -524,7 +524,7 @@ public class UserServiceImpl implements UserService {
             throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
         }
         //判断满减是否为0，若不为0则将满减金额发给shop
-        if(order.getReducedPrice()!=0){
+        if(Math.abs(order.getReducedPrice())>1e-2){
             Activity activity=userMapper.getActivityDataById(order.getActivityId());
             Integer rows9=userMapper.updateActivityFunds(order.getActivityId(),activity.getFunds()-order.getReducedPrice());
             if(rows9!=1){
