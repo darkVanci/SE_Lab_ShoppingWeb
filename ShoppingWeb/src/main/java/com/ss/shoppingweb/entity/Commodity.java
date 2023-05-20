@@ -19,5 +19,5 @@ public class Commodity extends CommodityBase {
     private LocalDateTime listTime;//上架的时间
     private LocalDateTime fixTime;//最后一次修改的时间
     private Integer activityId;//所参与活动的id，为0或空代表不参加任何活动
-    private Integer activityState;//该商品参与活动的申请状态，为0表示未通过，为1表示通过
+    private Integer activityState;//该商品参与活动的申请状态，为0表示未通过，为1表示通过，正在活动中
 }

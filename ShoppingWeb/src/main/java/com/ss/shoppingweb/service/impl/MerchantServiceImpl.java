@@ -423,11 +423,13 @@ public class MerchantServiceImpl implements MerchantService {
 
 
     /**根据商店ID查询上架记录总数*/
+    @Override
     public Integer getTotalNumOfListRecord(Integer shopId) {
         return merchantMapper.getTotalNumOfListRecord(shopId);
 
     }
     /**根据商店ID查询修改记录总数*/
+    @Override
     public Integer getTotalNumOfFixRecord(Integer shopId){
         return  merchantMapper.getTotalNumOfFixRecord(shopId);
     };
@@ -440,11 +442,13 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     /**查询目前正在举行的活动*/
+    @Override
     public List<Activity> getActivitiesNow(){
         return  merchantMapper.getActivitiesNow();
     };
 
     /**对指定id的商品申请参加指定id的活动*/
+    @Override
     public String getInActivity(Integer commodityId,Integer activityId) {
         //获取商店数据
         Shop shop = merchantMapper.getShopDataByShopId(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
@@ -455,13 +459,27 @@ public class MerchantServiceImpl implements MerchantService {
             //判断商店是否满足阈值要求
             boolean tag = true;
             Activity activity = merchantMapper.getActivityDataById(activityId);
+            //判断注册资金
             if(shop.getFunds()<=activity.getFundsLimit()){
                 tag = false;
             }
+            //判断月销售额
             if(shop.getMonthlySalesMoney()<=activity.getMonthlySalesMoneyLimit()){
                 tag = false;
             }
+            //判断月销售量
             if(shop.getMonthlySalesCount()<=activity.getMonthlySalesCountLimit()){
+                tag = false;
+            }
+            //判断种类是否符合
+            String[] stringList = activity.getCommodityCategories().split(",");
+            boolean tag2 = false;
+            for(String commodityCategoryName : stringList){
+                if(commodityCategoryName.equals(commodityCategoryName)){
+                    tag2=true;
+                }
+            }
+            if(!tag2){
                 tag = false;
             }
             if(tag) {
@@ -527,4 +545,11 @@ public class MerchantServiceImpl implements MerchantService {
             throw new InsertException("导入用户流水失败，请联系系统管理员！");
         }
     }
+
+
+    /**根据活动ID查找活动数据*/
+    @Override
+    public Activity getActivityDataById(Integer id){
+        return merchantMapper.getActivityDataById(id);
+    };
 }

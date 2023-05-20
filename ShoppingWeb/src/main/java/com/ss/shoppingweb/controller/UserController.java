@@ -1,6 +1,7 @@
 package com.ss.shoppingweb.controller;
 
 import com.ss.shoppingweb.entity.*;
+import com.ss.shoppingweb.exception.UpdateException;
 import com.ss.shoppingweb.service.UserService;
 import com.ss.shoppingweb.utils.JsonResult;
 import com.ss.shoppingweb.utils.JwtUtils;
@@ -139,6 +140,40 @@ public class  UserController extends BaseController{
     public JsonResult<Void> createOrders(@RequestBody List<Orders> orders,@RequestHeader("token") String token){
         Integer userId=JwtUtils.getJwtId(token);
         String userName=JwtUtils.getJwtName(token);
+
+        //获取满减表
+        List<Integer> ids = new ArrayList<>();
+        for(Orders order:orders){
+            ids.add(order.getCommodityId());
+        }
+        List<ActivityWithReducedPrice> activityWithReducedPriceList = userService.getTotalReducedMoney(ids);
+        //判断活动资金是否还足够
+        for (ActivityWithReducedPrice activityWithReducedPrice : activityWithReducedPriceList){
+            //不足够，结束活动，抛出异常
+            if(activityWithReducedPrice.getReducedPrice()>userService.getActivityDataById(activityWithReducedPrice.getId()).getFunds()){
+                userService.activityOver(activityWithReducedPrice.getId());
+                throw new UpdateException("此订单中参与活动的商品中，部分活动已结束！请重新下单!");
+            }
+        }
+
+        //对满减表处理
+       for (ActivityWithReducedPrice activityWithReducedPrice : activityWithReducedPriceList){
+           //对于每个满减活动，都应该遍历订单，寻找属于该活动的商品
+           for(Orders order : orders){
+               //属于此项活动时，开始处理
+               if(order.getActivityId()==activityWithReducedPrice.getId()){
+                   //获取此项商品的总价占该活动所有商品的比例
+                   double percent = order.getAmountSum()/activityWithReducedPrice.getTotalPrice();
+                   //获取此项商品应该减免的金额
+                   double reducedPrice = percent * activityWithReducedPrice.getReducedPrice();
+                   //修改order数据
+                   order.setAmountSum(order.getAmountSum()-reducedPrice);
+                   order.setReducedPrice(reducedPrice);
+               }
+           }
+       }
+
+
         for(Orders order:orders){
             order.setUserId(userId);
             order.setUserName(userName);
@@ -249,5 +284,19 @@ public class  UserController extends BaseController{
     public JsonResult<List<Coupon>> findUserCouponByUserId(@RequestParam Integer userId){
         List<Coupon> data = userService.findUserCouponByUserId(userId);
         return  new JsonResult<>(OK,data);
+    };
+
+    /**查询此次下单，每个活动能减免多少*/
+    @RequestMapping("/getTotalReducedMoney")
+    public JsonResult<List<ActivityWithReducedPrice>> getTotalReducedMoney(@RequestBody List<Integer> commodityIds){
+            List<ActivityWithReducedPrice> data = userService.getTotalReducedMoney(commodityIds);
+        return new JsonResult<>(OK,data);
+    };
+
+    /**查询某一活动中商品*/
+    @RequestMapping("/showCommoditiesInOneActivity")
+    public JsonResult<List<Commodity>> showCommoditiesInOneActivity(Integer id){
+        List<Commodity> data = userService.showCommoditiesInOneActivity(id);
+        return new JsonResult<>(OK,data);
     };
 }

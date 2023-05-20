@@ -459,6 +459,7 @@ public class AdminServiceImpl implements AdminService {
                 @Override
                 public void run() {
                     adminMapper.activityOverAffectCommodity(activity.getId());
+                    adminMapper.activityOverAffectShop(activity.getId());
                     adminMapper.activityOver(activity.getId());
                 }
             }, Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
@@ -479,6 +480,9 @@ public class AdminServiceImpl implements AdminService {
     /**对指定商品批准参加活动*/
     public void allowInActivity(Integer id){
         adminMapper.allowInActivity(id);
+        //设置商店活动id
+        Commodity commodity = adminMapper.getCommodityDataByCommodityId(id);
+        adminMapper.getInActivityAffectShop(commodity.getShopId(),commodity.getActivityId());
 
     };
 

@@ -285,4 +285,52 @@ public interface UserMapper {
      */
     @Select("Select * from coupon where userId=#{userId}")
     List<Coupon> findUserCouponByUserId(Integer userId);
+
+    /**查询目前正在举行的活动*/
+    @Select("select * from activity ")
+    List<Activity> getActivitiesNow();
+
+    /**根据活动ID查找活动数据*/
+    @Select("select * from activity where id = #{id} ")
+    Activity getActivityDataById(Integer id);
+
+    /**活动结束，所有参与该活动的商品结束参与活动状态*/
+
+    @Update("update commodity set activityId = 0 , activityState = 0 where activityId = #{activityId} ")
+    Integer activityOverAffectCommodity(Integer activityId);
+
+    /**活动结束，所有参与该活动的商店结束参与活动状态*/
+
+    @Update("update shop set activityId = 0 where activityId = #{activityId} ")
+    Integer activityOverAffectShop(Integer activityId);
+
+    /**活动结束，活动删除*/
+
+    @Update("DELETE from activity where id = #{activityId} ")
+    Integer activityOver(Integer activityId);
+
+    /**查询某一活动中商品*/
+    @Select("select * from commodity where activityId = #{id}")
+    List<Commodity> showCommoditiesInOneActivity(Integer id);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

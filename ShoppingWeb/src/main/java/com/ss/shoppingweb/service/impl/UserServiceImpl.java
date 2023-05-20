@@ -502,7 +502,7 @@ public class UserServiceImpl implements UserService {
         if(rows6!=1){
             throw new InsertException("导入商城利润账户流水失败，请联系系统管理员！");
         }
-        //商店账户资金增加
+        //商店账户资金增加,如果有满减则要将满减额度发往商户
         ShopAccount shopAccount=userMapper.findShopAccountByShopId(order.getShopId());
         double amount3=shopAccount.getAmount()+ShopAmount;
         Integer rows7=userMapper.updateShopAccount(amount3,order.getShopId());
@@ -526,4 +526,71 @@ public class UserServiceImpl implements UserService {
             throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
         }
     }
+
+    /**查询此次下单，每个活动能减免多少*/
+    public List<ActivityWithReducedPrice> getTotalReducedMoney(List<Integer> ids){
+        //新建一个数据表，用以返回
+        List<ActivityWithReducedPrice> activityWithReducedPriceList = new ArrayList<ActivityWithReducedPrice>();
+        //获取当前举行的活动
+        List<Activity> activities = userMapper.getActivitiesNow();
+        //对每个活动，经行遍历
+        for (Activity activity : activities){
+            //每个活动创建一个activityWithReducedPrice对象来存储，此次下单中，参与该活动的商品的金额总数和满减额度
+            ActivityWithReducedPrice activityWithReducedPrice = new ActivityWithReducedPrice(activity.getId(),0,0);
+            //对下单中的所有商品遍历
+            for (Integer id : ids){
+                //通过id获取商品数据
+                Commodity commodity = userMapper.getCommodityDataById(id);
+                //如果商品参与了此次活动，则计数
+                if(commodity.getActivityId()==activity.getId()){
+                    activityWithReducedPrice.setTotalPrice(activityWithReducedPrice.getTotalPrice()+commodity.getPrice());
+                }
+            }
+            //总价除以X，得出要满减几次
+            int times = (int)activityWithReducedPrice.getTotalPrice()/activity.getX();
+            if(times==0){
+                //该活动不满减
+            }
+            else{
+                //该活动要满减
+                activityWithReducedPrice.setReducedPrice(activity.getY()*times);
+                activityWithReducedPriceList.add(activityWithReducedPrice);
+            }
+        }
+        return  activityWithReducedPriceList;
+    };
+
+    /**根据活动ID查找活动数据*/
+    public Activity getActivityDataById(Integer id){
+        return  userMapper.getActivityDataById(id);
+    };
+
+    /**活动结束，所有参与该活动的商品结束参与活动状态,删除活动*/
+    public void activityOver(Integer activityId){
+        userMapper.activityOverAffectCommodity(activityId);
+        userMapper.activityOverAffectShop(activityId);
+        userMapper.activityOver(activityId);
+    };
+
+    /**查询某一活动中商品*/
+    public List<Commodity> showCommoditiesInOneActivity(Integer id){
+        return  userMapper.showCommoditiesInOneActivity(id);
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

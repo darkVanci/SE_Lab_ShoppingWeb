@@ -29,4 +29,6 @@ public class Orders {
     private Integer finishState;//完成状态:0未完成,1已完成
     private Integer refundRequest;//退款申请:1表示申请退款
     private Integer refundState;//退款状态:0表示为退款,1表示已退款
+    private Integer activityId;//商品参加的活动的id，为0代表不参加
+    private double reducedPrice;//该商品被满减的份额
 }

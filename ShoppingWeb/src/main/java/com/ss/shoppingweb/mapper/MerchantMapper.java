@@ -262,6 +262,7 @@ public interface MerchantMapper {
     @Select("select * from commodity where shopId = #{shopId} and activityId != 0")
     List<Commodity> getCommodityApplyActivity(Integer shopId);
 
+
 }
 
 

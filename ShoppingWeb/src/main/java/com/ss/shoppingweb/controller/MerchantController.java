@@ -342,4 +342,11 @@ public class MerchantController extends BaseController {
         return new JsonResult<>(OK);
     }
 
+    /**根据活动ID查找活动数据*/
+    @RequestMapping("/getActivityDataById")
+    public JsonResult<Activity> getActivityDataById(Integer id){
+        Activity data = merchantService.getActivityDataById(id);
+        return new JsonResult<>(OK,data);
+    };
+
 }

@@ -4,6 +4,7 @@ import com.ss.shoppingweb.entity.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.io.IOException;
 import java.util.List;
@@ -120,4 +121,17 @@ public interface UserService {
      * 根据用户id查找该用户拥有的优惠券
      */
     List<Coupon> findUserCouponByUserId(Integer userId);
+
+    /**查询此次下单，每个活动能减免多少*/
+    List<ActivityWithReducedPrice> getTotalReducedMoney(List<Integer> ids);
+
+    /**根据活动ID查找活动数据*/
+    Activity getActivityDataById(Integer id);
+
+
+    /**活动结束，所有参与该活动的商品结束参与活动状态,删除活动*/
+    void  activityOver(Integer activityId);
+
+    /**查询某一活动中商品*/
+    List<Commodity> showCommoditiesInOneActivity(Integer id);
 }

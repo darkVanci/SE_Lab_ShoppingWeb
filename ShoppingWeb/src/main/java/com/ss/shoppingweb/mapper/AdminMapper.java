@@ -208,6 +208,11 @@ public interface AdminMapper {
     @Update("update commodity set activityId = 0 , activityState = 0 where activityId = #{activityId} ")
     Integer activityOverAffectCommodity(Integer activityId);
 
+    /**活动结束，所有参与该活动的商店结束参与活动状态*/
+
+    @Update("update shop set activityId = 0 where activityId = #{activityId} ")
+    Integer activityOverAffectShop(Integer activityId);
+
     /**活动结束，活动删除*/
 
     @Update("DELETE from activity where id = #{activityId} ")
@@ -221,10 +226,17 @@ public interface AdminMapper {
     @Update("update commodity set activityState = 1 where id=#{id} ")
     Integer allowInActivity(Integer id);
 
+    /**对指定商品批准参加活动改变商店状态*/
+    @Update("update shop set activityId = #{activityId} where id = #{shopId}")
+    Integer getInActivityAffectShop(Integer shopId,Integer activityId);
+
     /**对指定商品驳回参加活动*/
     @Update("update commodity set activityId = 0 where id=#{id} ")
     Integer refuseInActivity(Integer id);
 
+    /**根据商品ID查询商品信息*/
+    @Select("select * from commodity where id = #{id}" )
+    Commodity getCommodityDataByCommodityId(Integer id);
 }
 
 

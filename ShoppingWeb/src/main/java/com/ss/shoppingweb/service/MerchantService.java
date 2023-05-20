@@ -105,4 +105,7 @@ public interface MerchantService {
 
     /**对指定id的商品申请参加指定id的活动*/
     String getInActivity(Integer commodityId,Integer activityId);
+
+    /**根据活动ID查找活动数据*/
+    Activity getActivityDataById(Integer id);
 }
