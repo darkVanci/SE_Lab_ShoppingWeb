@@ -12,11 +12,6 @@
         <div v-for="(image, index) in images" :key="index">
             <img :src="image" />
         </div>
-        <!-- <el-carousel :interval="4000" arrow="always">
-                <el-carousel-item v-for="(image, index) in images" :key="index">
-                    <img :src="image" />
-                </el-carousel-item>
-            </el-carousel> -->
         <div class="goods">
             <h2>商品信息</h2>
             <table>
@@ -43,7 +38,7 @@
                     </tr>
                     <tr>
                         <td>购买件数</td>
-                        <td><el-input-number v-model="num" @change="handleChange" :min="1" :max="10000"
+                        <td><el-input-number v-model="num" @change="handleChange" :min="0" :max="10000"
                                 label="描述文字"></el-input-number>
                             <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="primary" plain
                                 @click="addtocart(goodsInf.id, num)">加入购物车</el-button>

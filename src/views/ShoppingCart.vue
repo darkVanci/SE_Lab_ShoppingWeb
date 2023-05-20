@@ -14,7 +14,14 @@
         <!-- <el-table-column label="image"> </el-table-column> -->
 
         <el-table-column prop="commodityName" label="商品名字"></el-table-column>
-        <el-table-column prop="commodityNum" label="数量"></el-table-column>
+
+        <el-table-column label="数量">
+          <template v-slot="{ row }">
+            <el-input-number v-model="row.commodityNum" @change="handleChange(row)" :min="0" :max="10000"></el-input-number> 
+            <!-- :min="1" -->
+          </template>
+        </el-table-column>
+
         <el-table-column prop="price" label="单价"></el-table-column>
         <el-table-column prop="totalPrice" label="价格"></el-table-column>
       </el-table>
@@ -61,6 +68,11 @@ export default {
     }
   },
   methods: {
+    handleChange(row) { 
+
+        row.totalPrice = row.price * row.commodityNum // 重新计算totalprice
+      
+    },
     selectionHandler(val) {
       this.multipletable = val
     },

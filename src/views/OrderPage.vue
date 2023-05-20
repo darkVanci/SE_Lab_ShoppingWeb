@@ -75,34 +75,10 @@
 export default {
     data() {
         return {
-            products: [
-                {
-                    name: '商品1',
-                    quantity: 2,
-                    store: '店铺1',
-                    price: 100,
-                    note: '备注1'
-                },
-                {
-                    name: '商品2',
-                    quantity: 1,
-                    store: '店铺2',
-                    price: 200,
-                    note: '备注2'
-                },
-                {
-                    name: '商品3',
-                    quantity: 3,
-                    store: '店铺3',
-                    price: 300,
-                    note: '备注3'
-                }
-            ],
             addresses: ['地址1', '地址2', '地址3'],
             selectedAddress: '',
             showNewAddressForm: false,
             newAddress: '',
-            coupons: ['优惠券1', '优惠券2', '优惠券3'],
             selectedCoupon: '',
             discounts: [],
             selectedRows: []
@@ -130,45 +106,42 @@ export default {
         },
         submitOrder() {
             // TODO: 提交订单
-        }
-    },
-    watch: {
-        selectedCoupon(newCoupon) {
-            // 更新优惠明细
-            this.discounts = [];
-
-            if (newCoupon === '') {
-                return;
-            }
-
-            switch (newCoupon) {
-                case '优惠券1':
-                    this.discounts.push({
-                        name: '优惠券1',
-                        amount: 50
-                    });
-                    break;
-                case '优惠券2':
-                    this.discounts.push({
-                        name: '优惠券2',
-                        amount: 100
-                    });
-                    break;
-                case '优惠券3':
-                    this.discounts.push({
-                        name: '优惠券3',
-                        amount: 150
-                    });
-                    break;
-                default:
-                    break;
-            }
+            localStorage.setItem('token', this.users.data)
+            this.$axios
+                .post(
+                    '/user/createOrders',
+                    {
+                        shopId: this.selectedRows.shopId,
+                        shopName: this.selectedRows.commodityShopName,
+                        commodityId: this.selectedRows.commodityId,
+                        commodityName: this.selectedRows.commodityName,
+                        commodityPrice: this.selectedRows.price,
+                        commodityNum: this.selectedRows.commodityNum,
+                        amountSum: this.selectedRows.totalPrice,
+                        address: this.addresses,
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    if (response.data.state == 200) {
+                        this.$router.push({ name: 'paymentpage' })
+                    } else {
+                        this.$message.alert(response.data.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error(error)
+                })
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
 .back {
     float: left;
 }
@@ -238,6 +211,7 @@ button:hover {
 
 .summary {
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .summary table {
@@ -261,5 +235,57 @@ button[type="submit"] {
     font-weight: bold;
     font-size: 18px;
     margin-left: 20px;
+}
+
+/* 新增样式 */
+.products {
+    margin-top: 40px;
+}
+
+.products table {
+    margin-top: 20px;
+}
+
+.shipping {
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+    padding-top: 40px;
+}
+
+.shipping button {
+    margin-left: 10px;
+}
+
+.shownewaddressform {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.shownewaddressform label {
+    margin-right: 10px;
+}
+
+.shownewaddressform input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    margin-right: 10px;
+}
+
+.shownewaddressform button {
+    margin-right: 10px;
+}
+
+.summary td:nth-child(1),
+.summary td:nth-child(2) {
+    text-align: right;
+    vertical-align: middle;
+}
+
+.summary td:nth-child(2) {
+    font-size: 24px;
 }
 </style>

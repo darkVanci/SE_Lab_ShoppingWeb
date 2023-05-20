@@ -37,7 +37,7 @@
             {{ good.price }} 元
             <br />
             <el-input-number v-model="good.businessState" v-if="isLogged && !isMerchant && !isAdmin"
-              @change="handleChange" size="small" :min="1" :max="100" label="描述文字"></el-input-number>
+              @change="handleChange" size="small" :min="0" :max="10000" label="描述文字"></el-input-number>
 
             <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="primary" plain
               @click="addtocart(good.id, good.businessState)">加入购物车</el-button>
