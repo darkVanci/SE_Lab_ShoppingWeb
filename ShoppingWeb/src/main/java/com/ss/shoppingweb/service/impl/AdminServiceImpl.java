@@ -522,5 +522,10 @@ public class AdminServiceImpl implements AdminService {
     public void refuseInActivity(Integer id){
         adminMapper.refuseInActivity(id);
    }
+
+    /**根据活动ID查找活动数据*/
+    public Activity getActivityDataById(Integer id){
+        return  adminMapper.getActivityDataById(id);
+    };
 }
 
