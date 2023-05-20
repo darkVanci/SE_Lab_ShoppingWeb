@@ -23,7 +23,13 @@ public class AdminServiceTest extends ShoppingWebApplicationTests {
         activity.setMonthlySalesMoneyLimit(100.0);
         activity.setCommodityCategories("food");
         adminService.holdActivity(activity);
-        Activity activity1 = adminService.getActivityDataById(1);
-        Assert.assertSame("设置活动持续时间错误","4",activity1.getHoldingDays());
+        Activity activity1 = adminService.getActivityDataById(5);
+        Assert.assertSame("设置活动持续时间错误",4,activity1.getHoldingDays());
+    }
+
+    @Test
+    public void testGetActivityDataById(){
+        Activity activity1 = adminService.getActivityDataById(3);
+        Assert.assertSame("设置活动持续时间错误",4,activity1.getHoldingDays());
     }
 }
