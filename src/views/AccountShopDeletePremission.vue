@@ -7,6 +7,8 @@
           <el-menu-item index="/newgoodshandler">商品上架申请</el-menu-item>
           <el-menu-item index="/modifygoodshandler">商品修改申请</el-menu-item>
         <el-menu-item index="/accountshopdelete">商店删除请求</el-menu-item>
+        <el-menu-item index="/activitymanager">活动管理</el-menu-item>
+
       </el-menu>
     </el-header>
     <el-main

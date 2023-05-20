@@ -1,6 +1,5 @@
 <template>
-    <div class="container">
-        <div class="back">
+    <div class="back">
             <el-button type="primary" plain round @click="goBack">
                 <el-icon style="vertical-align: middle;">
                     <Back />
@@ -8,7 +7,7 @@
                 <span style="vertical-align: middle;"> 返回 </span>
             </el-button>
         </div>
-
+    <div class="container">
         <div v-for="(image, index) in images" :key="index">
             <img :src="image" />
         </div>
@@ -187,7 +186,8 @@ export default {
 }
 
 .back {
-    margin-bottom: 20px;
+    margin: 20px;
+    position: absolute;
 }
 
 .goods h2 {

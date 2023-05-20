@@ -37,11 +37,10 @@
             <select id="address" name="address" v-model="selectedAddress">
                 <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address }}</option>
             </select>
-            <button @click="showNewAddressForm = true">新建收货地址</button>
             <div v-show="showNewAddressForm">
                 <label for="new-address">新建收货地址：</label>
                 <input type="text" id="new-address" v-model="newAddress">
-                <button @click="addNewAddress">保存</button>
+                <el-button @click="addNewAddress">保存</el-button>
             </div>
         </div>
 
@@ -67,7 +66,7 @@
         </div>
 
         <!-- 提交订单 -->
-        <button @click="submitOrder">提交订单</button>
+        <el-button @click="submitOrder">提交订单</el-button>
     </div>
 </template>
   
@@ -99,35 +98,25 @@ export default {
         goBack() {
             this.$router.go(-1);
         },
-        addNewAddress() {
-            this.addresses.push(this.newAddress);
-            this.selectedAddress = this.newAddress;
-            this.showNewAddressForm = false;
-        },
         submitOrder() {
             // TODO: 提交订单
-            localStorage.setItem('token', this.users.data)
+            const token = localStorage.getItem('token')
+            this.selectedRows.forEach((product) => {
+                product.address = this.selectedAddress;
+            });
             this.$axios
                 .post(
-                    '/user/createOrders',
+                    '/user/createOrders', this.selectedRows,
                     {
-                        shopId: this.selectedRows.shopId,
-                        shopName: this.selectedRows.commodityShopName,
-                        commodityId: this.selectedRows.commodityId,
-                        commodityName: this.selectedRows.commodityName,
-                        commodityPrice: this.selectedRows.price,
-                        commodityNum: this.selectedRows.commodityNum,
-                        amountSum: this.selectedRows.totalPrice,
-                        address: this.addresses,
-                    },
-                    {
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: {
+                            token: `${token}`
+                        }
                     }
                 )
                 .then((response) => {
                     console.log(response.data)
                     if (response.data.state == 200) {
-                        this.$router.push({ name: 'paymentpage' })
+                        this.$router.push({ name: '' })//直接跳到订单管理中的待支付页面
                     } else {
                         this.$message.alert(response.data.message)
                     }

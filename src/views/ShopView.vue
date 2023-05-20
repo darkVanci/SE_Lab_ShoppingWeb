@@ -19,7 +19,7 @@
           </el-menu>
         </div>
       </el-header>
-      <el-main>
+      <el-main class="main">
         <h2>{{ shop.shopName }}</h2>
         <el-space wrap>
           <el-card v-for="good in goods" :key="good.id" class="box-card" style="width: 250px">
@@ -179,5 +179,10 @@ export default {
   overflow-wrap: break-word;
   /* text-align: left; */
   /* text-indent: 2em; */
+}
+
+.main {
+  width: 70%;
+  margin: auto;
 }
 </style>

@@ -7,12 +7,13 @@
           <el-menu-item index="/backstage">开店申请</el-menu-item>
           <el-menu-item index="/newgoodshandler">商品上架申请</el-menu-item>
           <el-menu-item index="/modifygoodshandler">商品修改申请</el-menu-item>
-        <el-menu-item index="/accountshopdelete">商店删除请求</el-menu-item>
+          <el-menu-item index="/accountshopdelete">商店删除请求</el-menu-item>
+          <el-menu-item index="/activitymanager">活动管理</el-menu-item>
 
         </el-menu>
       </el-header>
-      <el-main
-        ><h1>开店请求列表</h1>
+      <el-main>
+        <h1>开店请求列表</h1>
         <el-space wrap>
           <el-card v-for="shop in shops" :key="shop.id" class="box-card" style="width: 250px">
             <template #header>
@@ -30,12 +31,8 @@
             </template>
 
             <div class="card-footer">
-              <el-button class="button" @click="approve(shop.id)" type="success" plain
-                >批准</el-button
-              >
-              <el-button class="button" @click="disapprove(shop.id)" type="danger" plain
-                >驳回</el-button
-              >
+              <el-button class="button" @click="approve(shop.id)" type="success" plain>批准</el-button>
+              <el-button class="button" @click="disapprove(shop.id)" type="danger" plain>驳回</el-button>
             </div>
           </el-card>
         </el-space>
@@ -149,6 +146,7 @@ export default {
 .err_msg {
   color: red;
 }
+
 .center {
   display: flex;
   justify-content: center;
