@@ -327,9 +327,10 @@ public class AdminServiceImpl implements AdminService {
         }
         //删除图片
         String[] strings =commodity.getImageUrl().split(",");
+        String currentDirectory = System.getProperty("user.dir");
         for(String path:strings){
-            Path absolute = Paths.get(path);
-            Files.delete(absolute);
+            Path relative = Paths.get(currentDirectory,path);
+            Files.delete(relative);
         }
     };
 
@@ -340,14 +341,7 @@ public class AdminServiceImpl implements AdminService {
         for (Commodity commodity:commodities){
             String urls = commodity.getImageUrl();
             String[] realUrls = urls.split(",");
-            List<String> images = new ArrayList<String>();
-            for(String url:realUrls) {
-                File file = new File(url);
-                byte[] imageData = Files.readAllBytes(file.toPath());
-                String imageDataString = Base64.getEncoder().encodeToString(imageData);
-                images.add(imageDataString);
-            }
-            commodity.setImageString(images);
+            commodity.setImageUrls(realUrls);
         }
         return commodities;
     };
@@ -365,10 +359,12 @@ public class AdminServiceImpl implements AdminService {
         //若修改图片，删除原有图片
         if(commodityFixed1.getImageUrl().length()!=0) {
             Commodity commodity = adminMapper.findCommodityById(commodityFixed1.getFixId());
-            String[] strings = commodity.getImageUrl().split(",");
-            for (String path : strings) {
-                Path absolute = Paths.get(path);
-                Files.delete(absolute);
+            //删除图片
+            String[] strings =commodity.getImageUrl().split(",");
+            String currentDirectory = System.getProperty("user.dir");
+            for(String path:strings){
+                Path relative = Paths.get(currentDirectory,path);
+                Files.delete(relative);
             }
             //更新商品信息
             rows = adminMapper.updateFixedCommodity(commodityFixed1);
@@ -402,9 +398,10 @@ public class AdminServiceImpl implements AdminService {
         //删除暂存图片
         if(commodityFixed1.getImageUrl().length()!=0) {
             String[] strings = commodityFixed1.getImageUrl().split(",");
-            for (String path : strings) {
-                Path absolute = Paths.get(path);
-                Files.delete(absolute);
+            String currentDirectory = System.getProperty("user.dir");
+            for(String path:strings){
+                Path relative = Paths.get(currentDirectory,path);
+                Files.delete(relative);
             }
         }
 
@@ -422,14 +419,7 @@ public class AdminServiceImpl implements AdminService {
             String urls = commodityFixed.getImageUrl();
             if (urls.length() != 0) {
                 String[] realUrls = urls.split(",");
-                List<String> images = new ArrayList<String>();
-                for (String url : realUrls) {
-                    File file = new File(url);
-                    byte[] imageData = Files.readAllBytes(file.toPath());
-                    String imageDataString = Base64.getEncoder().encodeToString(imageData);
-                    images.add(imageDataString);
-                }
-                commodityFixed.setImageString(images);
+                commodityFixed.setImageUrls(realUrls);
             }
 
         }

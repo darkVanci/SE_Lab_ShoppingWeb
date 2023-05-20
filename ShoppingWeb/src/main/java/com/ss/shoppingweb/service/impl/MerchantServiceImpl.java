@@ -336,14 +336,7 @@ public class MerchantServiceImpl implements MerchantService {
         for (Commodity commodity:commodities){
             String urls = commodity.getImageUrl();
             String[] realUrls = urls.split(",");
-            List<String> images = new ArrayList<String>();
-            for(String url:realUrls) {
-                File file = new File(url);
-                byte[] imageData = Files.readAllBytes(file.toPath());
-                String imageDataString = Base64.getEncoder().encodeToString(imageData);
-                images.add(imageDataString);
-            }
-            commodity.setImageString(images);
+            commodity.setImageUrls(realUrls);
         }
         return commodities;
     };
@@ -392,9 +385,10 @@ public class MerchantServiceImpl implements MerchantService {
         }
         //删除图片
         String[] strings =commodity.getImageUrl().split(",");
+        String currentDirectory = System.getProperty("user.dir");
         for(String path:strings){
-            Path absolute = Paths.get(path);
-            Files.delete(absolute);
+            Path relative = Paths.get(currentDirectory,path);
+            Files.delete(relative);
         }
         //下架商品，购物车同步信息，可能更新多条数据，不检查rows是否为1
         merchantMapper.updateShoppingCart(commodity);

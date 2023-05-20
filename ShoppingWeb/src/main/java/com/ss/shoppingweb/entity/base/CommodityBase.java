@@ -17,7 +17,7 @@ public class CommodityBase {
     private double price;//商品价格
     private String imageUrl;//图片路径，多个图片之间以逗号隔开
     private MultipartFile[] image;//仅仅用作接收图片，不存入数据库，无需在数据库单设一列
-    private List<String> imageString;//转化成String类型的图片，仅仅用于传图片给前端，不修改数据库，无需在数据库中单设一列
+    private String[] imageUrls;//转化成String类型的图片，仅仅用于传图片给前端，不修改数据库，无需在数据库中单设一列
 
 
 

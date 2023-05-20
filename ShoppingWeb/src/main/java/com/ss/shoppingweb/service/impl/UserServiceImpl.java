@@ -219,14 +219,7 @@ public class UserServiceImpl implements UserService {
             if (shoppingCart.getBusinessState() == 1) {
                 String urls = shoppingCart.getImageUrl();
                 String[] realUrls = urls.split(",");
-                List<String> images = new ArrayList<String>();
-                for (String url : realUrls) {
-                    File file = new File(url);
-                    byte[] imageData = Files.readAllBytes(file.toPath());
-                    String imageDataString = Base64.getEncoder().encodeToString(imageData);
-                    images.add(imageDataString);
-                }
-                shoppingCart.setImageString(images);
+                shoppingCart.setImageUrls(realUrls);
             }
         }
         return shoppingCarts;
