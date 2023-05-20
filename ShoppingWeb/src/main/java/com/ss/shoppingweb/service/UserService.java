@@ -1,6 +1,7 @@
 package com.ss.shoppingweb.service;
 
 import com.ss.shoppingweb.entity.*;
+import org.apache.ibatis.annotations.Select;
 
 import java.io.IOException;
 import java.util.List;
@@ -130,4 +131,11 @@ public interface UserService {
 
     /**查询某一活动中商品*/
     List<Commodity> showCommoditiesInOneActivity(Integer id);
+
+    /**首页推荐商品，按销量*/
+    List<Commodity> showRecommendedCommodities();
+
+    /**首页搜索商品，按销量排序*/
+    @Select("SELECT * FROM commodity WHERE commodityName LIKE CONCAT('%', #{string}, '%')")
+    List<Commodity> searchCommodity(String string);
 }

@@ -301,4 +301,18 @@ public class  UserController extends BaseController{
         List<Commodity> data = userService.showCommoditiesInOneActivity(id);
         return new JsonResult<>(OK,data);
     };
+
+    /**首页推荐商品，按销量*/
+    @RequestMapping("/showRecommendedCommodities")
+    public JsonResult<List<Commodity>> showRecommendedCommodities(){
+        List<Commodity> data = userService.showRecommendedCommodities();
+        return new JsonResult<>(OK,data);
+    };
+
+    /**首页搜索商品，按销量排序*/
+    @RequestMapping("/searchCommodity")
+    public JsonResult<List<Commodity>> searchCommodity(String string){
+        List<Commodity> data = userService.searchCommodity(string);
+        return new JsonResult<>(OK,data);
+    };
 }
