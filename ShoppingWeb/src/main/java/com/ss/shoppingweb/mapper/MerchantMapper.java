@@ -214,6 +214,38 @@ public interface MerchantMapper {
     @Select("select count(*) from fixrecord where shopId = #{shopId}")
     Integer getTotalNumOfFixRecord(Integer shopId);
 
+    /**获取待发货订单*/
+    @Select("Select * from orders where shopId=#{shopId} and payState=1 and deliveryState=0 and refundRequest=0")
+    List<Orders> getShopToDeliveryOrdersByShopId(Integer shopId);
+
+    /**修改订单为发货状态*/
+    @Update("Update orders set deliveryState=1 where id=#{orderId}")
+    Integer updateDeliveryStateByOrderId(Integer orderId);
+
+    /**获取退款退货订单*/
+    @Select("Select * from orders where shopId=#{shopId} and payState=1 and finishState=0 and refundRequest=1 and refundState=0")
+    List<Orders> getShopRefundOrdersByShopId(Integer shopId);
+
+    /**修改订单退款状态*/
+    @Update("Update orders set refundState=1 where id=#{orderId}")
+    Integer updateRefundStateByOrderId(Integer orderId);
+
+    /**根据订单编号获取订单*/
+    @Select("Select * from orders where id=#{orderId}")
+    Orders findOrderByOrderId(Integer orderId);
+
+    /**根据id查账户*/
+    @Select("Select * from useraccount where ownerId=#{ownerId}")
+    UserAccount findUserAccountByOwnerId(Integer ownerId);
+
+    /**修改账户*/
+    @Update("Update useraccount set amount=#{amount} where ownerId=#{ownerId}")
+    Integer updateUserAccount(double amount,Integer ownerId);
+
+    /**插入用户流水记录*/
+    @Insert("Insert into useraccountrecorder (userId,initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{userId},#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertUserAccountRecorder(UserAccountRecorder userAccountRecorder);
+
     /**查询目前正在举行的活动*/
     @Select("select * from activity ")
     List<Activity> getActivitiesNow();
@@ -229,6 +261,7 @@ public interface MerchantMapper {
     /**查询该商店已经申请过活动的商品*/
     @Select("select * from commodity where shopId = #{shopId} and activityId != 0")
     List<Commodity> getCommodityApplyActivity(Integer shopId);
+
 }
 
 

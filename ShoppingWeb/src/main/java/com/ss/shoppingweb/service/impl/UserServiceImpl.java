@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -270,6 +271,20 @@ public class UserServiceImpl implements UserService {
         return  userMapper.findUserShippingAddressById(id);
     };
 
+    //创建订单
+    public void createOrder(Orders order){
+        order.setPurchaseTime(LocalDateTime.now());
+        order.setPayState(0);
+        order.setWithdrawState(0);
+        order.setDeliveryState(0);
+        order.setFinishState(0);
+        order.setRefundRequest(0);
+        order.setRefundState(0);
+        Integer rows=userMapper.insertOrders(order);
+        if(rows!=1){
+            throw new InsertException("向数据库中导入订单信息出错，请联系系统管理员！");
+        }
+    }
     /**
      * 根据用户id查找该用户拥有的优惠券
      */
@@ -278,4 +293,237 @@ public class UserServiceImpl implements UserService {
     };
 
 
+    /**判断用户余额是否充足*/
+    public void judgeUserAccount(Integer userId,List<Orders> orders){
+        //根据用户id获取用户账户
+        UserAccount userAccount=userMapper.findUserAccountByOwnerId(userId);
+        //遍历获得所有订单总价
+        double sum=0;
+        for(Orders order:orders){
+            //根据订单id获取订单信息
+            Orders orderSql=userMapper.findOrderByOrderId(order.getId());
+            sum+=orderSql.getAmountSum();
+        }
+        if(sum>userAccount.getAmount()){
+            throw new PocketNotAdequateException("用户余额不足，请充值！");
+        }
+    }
+
+    /**支付订单*/
+    public void payOrder(Integer orderId){
+        //根据订单编号获取订单信息
+        Orders order=userMapper.findOrderByOrderId(orderId);
+        UserAccount userAccount=userMapper.findUserAccountByOwnerId(order.getUserId());
+        //修改订单支付状态
+        Integer rows1=userMapper.updatePayStateBYOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单支付状态出错，请联系系统管理员！");
+        }
+        //用户余额减少，增加流水记录
+        double amount1=userAccount.getAmount()-order.getAmountSum();
+        Integer rows2=userMapper.updateAccount(amount1,order.getUserId());
+        if(rows2!=1){
+            throw new UpdateException("修改用户账户出错，请联系系统管理员！");
+        }
+        UserAccountRecorder userAccountRecorder=new UserAccountRecorder();
+        userAccountRecorder.setUserId(order.getUserId());
+        userAccountRecorder.setInitiatorRole(1);
+        userAccountRecorder.setInitiatorId(order.getUserId());
+        userAccountRecorder.setInitiatorName(order.getUserName());
+        userAccountRecorder.setReceiverRole(3);
+        userAccountRecorder.setReceiverId(order.getShopId());
+        userAccountRecorder.setReceiverName(order.getShopName());
+        userAccountRecorder.setTradeRecord("购买商品");
+        userAccountRecorder.setAmount(order.getAmountSum());
+        userAccountRecorder.setTradeTime(LocalDateTime.now());
+        userAccountRecorder.setInAndout(-1);
+        Integer rows3=userMapper.insertUserAccountRecorder(userAccountRecorder);
+        if(rows3!=1){
+            throw new InsertException("插入用户流水出错，请联系系统管理员！");
+        }
+        //中间商城账户余额增加，增加流水记录
+        MiddleAccount middleAccount=userMapper.findMiddleAccount();
+        double amount2=middleAccount.getAmount()+order.getAmountSum();
+        Integer rows4=userMapper.updateMiddleAccount(amount2);
+        if(rows4!=1){
+            throw new UpdateException("修改中间账户出错，请联系系统管理员！");
+        }
+        MiddleAccountRecorder middleAccountRecorder=new MiddleAccountRecorder();
+        middleAccountRecorder.setInitiatorRole(1);
+        middleAccountRecorder.setInitiatorId(order.getUserId());
+        middleAccountRecorder.setInitiatorName(order.getUserName());
+        middleAccountRecorder.setReceiverRole(4);
+        middleAccountRecorder.setReceiverId(1);
+        middleAccountRecorder.setReceiverName("中间商城账户");
+        middleAccountRecorder.setAmount(order.getAmountSum());
+        middleAccountRecorder.setTradeTime(LocalDateTime.now());
+        middleAccountRecorder.setTradeRecord("购买商品");
+        middleAccountRecorder.setInAndout(1);
+        Integer rows5=userMapper.insertMiddleAccountRecorder(middleAccountRecorder);
+        if(rows5!=1){
+            throw new InsertException("插入中间账户流水出错，请联系系统管理员！");
+        }
+    }
+
+    /**撤销订单*/
+    public void withdrawOrders(Integer orderId){
+        //将对应的订单的withdrawState修改为1
+        Integer rows1=userMapper.updateWithdrawStatwByOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单撤销状态出错，请联系系统管理员！");
+        }
+    }
+
+    /**删除订单*/
+    public void deleteOrders(Integer orderId){
+        Integer rows1=userMapper.deleteOrderByOrderId(orderId);
+        if(rows1!=1){
+            throw new DeleteException("删除订单出错，请联系系统管理员！");
+        }
+    }
+
+    /**获取待支付订单*/
+    public List<Orders> getToPayOrders(Integer userId){
+        return userMapper.getToPayOrdersByUserId(userId);
+    }
+
+    /**获取已撤销订单*/
+    public List<Orders> getHaveWithdrawOrders(Integer userId) {
+        return userMapper.getHaveWithdrawOrdersByUserId(userId);
+    }
+
+    /**获取待发货订单*/
+    public List<Orders> getToDeliveryOrders(Integer userId){
+        return userMapper.getToDeliveryOrdersByUserId(userId);
+    }
+
+    /**获取待收货订单*/
+    public List<Orders> getHaveDeliveryOrders(Integer userId){
+        return userMapper.getHaveDeliveryOrdersByUserId(userId);
+    }
+
+    /**请求退款退货*/
+    @Override
+    public void requestRefund(Integer orderId) {
+        Integer rows1=userMapper.UpdateRefundRequestByOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单退款请求失败，请联系系统管理员！");
+        }
+    }
+
+    /**获取待退款订单*/
+    @Override
+    public List<Orders> getToRefundOrders(Integer userId) {
+        return userMapper.getToRefundOrdersByUserId(userId);
+    }
+
+    /**获取已退款订单*/
+    @Override
+    public List<Orders> getHaveRefundOrders(Integer userId) {
+        return userMapper.getHaveRefundOrdersByUserId(userId);
+    }
+
+    /**获取已完成订单*/
+    @Override
+    public List<Orders> getHaveFinishOrders(Integer userId) {
+        return userMapper.getHaveFinishOrdersByUserId(userId);
+    }
+
+    /**确认收货*/
+    @Override
+    public void confirmFinishOrders(Integer orderId) {
+        //修改订单状态为完成
+        Integer rows1=userMapper.UpdateFinishStateByOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单完成状态失败，请联系系统管理员");
+        }
+        //获取订单信息
+        Orders order=userMapper.findOrderByOrderId(orderId);
+        DecimalFormat df = new DecimalFormat("#.##");
+        double AdminAmount=Double.parseDouble(df.format(order.getAmountSum()*0.05));
+        double ShopAmount=Double.parseDouble(df.format(order.getAmountSum()*0.95));
+        //商城中间商户资金减少
+        MiddleAccount middleAccount=userMapper.findMiddleAccount();
+        double amount1=middleAccount.getAmount()-order.getAmountSum();
+        Integer rows2=userMapper.updateMiddleAccount(amount1);
+        if(rows2!=1){
+            throw new UpdateException("修改中间商城出错，请联系系统管理员！");
+        }
+        MiddleAccountRecorder middleAccountRecorder1=new MiddleAccountRecorder();
+        middleAccountRecorder1.setInitiatorRole(4);
+        middleAccountRecorder1.setInitiatorId(1);
+        middleAccountRecorder1.setInitiatorName("商城中间账户");
+        middleAccountRecorder1.setReceiverRole(5);
+        middleAccountRecorder1.setReceiverId(1);
+        middleAccountRecorder1.setReceiverName("商城利润账户");
+        middleAccountRecorder1.setAmount(AdminAmount);
+        middleAccountRecorder1.setTradeTime(LocalDateTime.now());
+        middleAccountRecorder1.setTradeRecord("商品交易佣金");
+        middleAccountRecorder1.setInAndout(-1);
+        Integer rows3=userMapper.insertMiddleAccountRecorder(middleAccountRecorder1);
+        if(rows3!=1){
+            throw new InsertException("导入中间商城流水记录失败,请联系系统管理员！");
+        }
+        MiddleAccountRecorder middleAccountRecorder2=new MiddleAccountRecorder();
+        middleAccountRecorder2.setInitiatorRole(4);
+        middleAccountRecorder2.setInitiatorId(1);
+        middleAccountRecorder2.setInitiatorName("商城中间账户");
+        middleAccountRecorder2.setReceiverRole(3);
+        middleAccountRecorder2.setReceiverId(order.getShopId());
+        middleAccountRecorder2.setReceiverName(order.getShopName());
+        middleAccountRecorder2.setAmount(ShopAmount);
+        middleAccountRecorder2.setTradeTime(LocalDateTime.now());
+        middleAccountRecorder2.setTradeRecord("商品交易所得");
+        middleAccountRecorder2.setInAndout(-1);
+        Integer rows4=userMapper.insertMiddleAccountRecorder(middleAccountRecorder2);
+        if(rows4!=1){
+            throw new InsertException("导入中间商城流水记录失败，请联系系统管理员！");
+        }
+        //商城利润账户资金增加
+        AdminAccount adminAccount=userMapper.findAdminAccount();
+        double amount2=adminAccount.getAmount()+AdminAmount;
+        Integer rows5=userMapper.UpdateAdminAccount(amount2);
+        if(rows5!=1){
+            throw new UpdateException("修改商城利润账户失败，请联系系统管理员！");
+        }
+        AdminAccountRecorder adminAccountRecorder=new AdminAccountRecorder();
+        adminAccountRecorder.setAdminId(1);
+        adminAccountRecorder.setInitiatorRole(4);
+        adminAccountRecorder.setInitiatorId(1);
+        adminAccountRecorder.setInitiatorName("商城中间账户");
+        adminAccountRecorder.setReceiverRole(5);
+        adminAccountRecorder.setReceiverId(1);
+        adminAccountRecorder.setReceiverName("商城利润账户");
+        adminAccountRecorder.setAmount(AdminAmount);
+        adminAccountRecorder.setTradeTime(LocalDateTime.now());
+        adminAccountRecorder.setTradeRecord("商品交易佣金");
+        adminAccountRecorder.setInAndout(1);
+        Integer rows6=userMapper.insertAdminAccountRecorder(adminAccountRecorder);
+        if(rows6!=1){
+            throw new InsertException("导入商城利润账户流水失败，请联系系统管理员！");
+        }
+        //商店账户资金增加
+        ShopAccount shopAccount=userMapper.findShopAccountByShopId(order.getShopId());
+        double amount3=shopAccount.getAmount()+ShopAmount;
+        Integer rows7=userMapper.updateShopAccount(amount3,order.getShopId());
+        if(rows7!=1){
+            throw new UpdateException("修改商店账户失败，请联系系统管理员！");
+        }
+        ShopAccountRecorder shopAccountRecorder=new ShopAccountRecorder();
+        shopAccountRecorder.setShopId(order.getShopId());
+        shopAccountRecorder.setInitiatorRole(4);
+        shopAccountRecorder.setInitiatorId(1);
+        shopAccountRecorder.setInitiatorName("商城中间账户");
+        shopAccountRecorder.setReceiverRole(3);
+        shopAccountRecorder.setReceiverId(order.getShopId());
+        shopAccountRecorder.setReceiverName(order.getShopName());
+        shopAccountRecorder.setAmount(ShopAmount);
+        shopAccountRecorder.setTradeTime(LocalDateTime.now());
+        shopAccountRecorder.setTradeRecord("商品完成交易所得");
+        shopAccountRecorder.setInAndout(1);
+        Integer rows8=userMapper.insertShopAccountRecorder(shopAccountRecorder);
+        if(rows8!=1){
+            throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
+        }
+    }
 }

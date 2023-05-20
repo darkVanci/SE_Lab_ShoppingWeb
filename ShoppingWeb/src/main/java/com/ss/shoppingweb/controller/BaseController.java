@@ -44,9 +44,21 @@ public class BaseController {
         else if(e instanceof CannotDeleteException){
             result.setState(4007);
         }
+        /**用户余额不足异常*/
+        else if(e instanceof  PocketNotAdequateException){
+            result.setState(4008);
+        }
         /**用户数据插入数据库异常*/
         else if (e instanceof InsertException) {
             result.setState(5000);
+        }
+        /**修改数据库异常*/
+        else if(e instanceof UpdateException){
+            result.setState(5001);
+        }
+        /**删除数据异常*/
+        else if(e instanceof  DeleteException){
+            result.setState(5002);
         }
         return result;
     }

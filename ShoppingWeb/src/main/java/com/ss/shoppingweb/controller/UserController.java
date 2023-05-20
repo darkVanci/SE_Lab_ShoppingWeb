@@ -4,9 +4,11 @@ import com.ss.shoppingweb.entity.*;
 import com.ss.shoppingweb.service.UserService;
 import com.ss.shoppingweb.utils.JsonResult;
 import com.ss.shoppingweb.utils.JwtUtils;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,6 +134,114 @@ public class  UserController extends BaseController{
         return new JsonResult<>(OK,data);
     };
 
+    /**接收前端发送的订单信息创建订单*/
+    @PostMapping("/createOrders")
+    public JsonResult<Void> createOrders(@RequestBody List<Orders> orders,@RequestHeader("token") String token){
+        Integer userId=JwtUtils.getJwtId(token);
+        String userName=JwtUtils.getJwtName(token);
+        for(Orders order:orders){
+            order.setUserId(userId);
+            order.setUserName(userName);
+            userService.createOrder(order);
+        }
+        return new JsonResult<>(OK);
+    }
+
+    /**支付订单*/
+    @PostMapping("/payOrders")
+    public JsonResult<Void> payOrders(@RequestBody List<Orders> orders,@RequestHeader("token") String token){
+        //判断用户余额是否充足
+        Integer userId=JwtUtils.getJwtId(token);
+        userService.judgeUserAccount(userId,orders);
+        for(Orders order:orders){
+            userService.payOrder(order.getId());
+        }
+        return new JsonResult<>(OK);
+    }
+
+    /**撤销订单*/
+    @PostMapping("/withdrawOrders")
+    public  JsonResult<Void> withdrawOrders(@RequestBody Orders order){
+        userService.withdrawOrders(order.getId());
+        return new JsonResult<>(OK);
+    }
+
+    /**删除订单*/
+    @PostMapping("/deleteOrders")
+    public JsonResult<Void> deleteOrders(@RequestBody Orders order){
+        userService.deleteOrders(order.getId());
+        return new JsonResult<>(OK);
+    }
+
+    /**展示待支付订单*/
+    @RequestMapping("/getToPayOrders")
+    public JsonResult<List<Orders>> getToPayOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getToPayOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**展示已撤销订单*/
+    @RequestMapping("/getHaveWithdrawOrders")
+    public JsonResult<List<Orders>> getHaveWithdrawOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getHaveWithdrawOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**展示待发货订单*/
+    @RequestMapping("/getToDeliveryOrders")
+    public JsonResult<List<Orders>> getToDeliveryOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getToDeliveryOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**展示待收货订单*/
+    @RequestMapping("/getToFinishOrders")
+    public JsonResult<List<Orders>> getToFinishOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getHaveDeliveryOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**请求退款退货*/
+    @PostMapping("/requestRefund")
+    public JsonResult<Void> requestRefund(@RequestBody Orders order){
+        userService.requestRefund(order.getId());
+        return new JsonResult<>(OK);
+    }
+
+    /**展示待退款订单*/
+    @RequestMapping("/getToRefundOrders")
+    public JsonResult<List<Orders>> getToRefundOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getToRefundOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**展示已退款订单*/
+    @RequestMapping("/getHaveRefundOrders")
+    public JsonResult<List<Orders>> getHaveRefundOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getHaveRefundOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**展示已完成订单*/
+    @RequestMapping("getHaveFinishOrders")
+    public JsonResult<List<Orders>> getHaveFinishOrders(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
+        List<Orders> data=userService.getHaveFinishOrders(userId);
+        return new JsonResult<>(OK,data);
+    }
+
+    /**确认收货*/
+    @PostMapping("/confirmFinish")
+    public JsonResult<Void> confirmFinish(@RequestBody Orders order){
+        userService.confirmFinishOrders(order.getId());
+        return new JsonResult<>(OK);
+    }
     /**
      * 根据用户id查找该用户拥有的优惠券
      */

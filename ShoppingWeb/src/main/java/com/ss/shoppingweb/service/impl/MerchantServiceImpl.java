@@ -432,6 +432,13 @@ public class MerchantServiceImpl implements MerchantService {
         return  merchantMapper.getTotalNumOfFixRecord(shopId);
     };
 
+    /**根据商户id获取商店待发货订单*/
+    @Override
+    public List<Orders> getShopToDeliveryOrders(Integer merchantId) {
+        Shop shop=merchantMapper.getShopDataByMerchantId(merchantId);
+        return merchantMapper.getShopToDeliveryOrdersByShopId(shop.getId());
+    }
+
     /**查询目前正在举行的活动*/
     public List<Activity> getActivitiesNow(){
         return  merchantMapper.getActivitiesNow();
@@ -471,8 +478,53 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
 
+    /**商家发货*/
+    @Override
+    public void shopDeliveryOrders(Integer orderId) {
+        Integer rows1=merchantMapper.updateDeliveryStateByOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单发货状态出错，请联系系统管理员");
+        }
+    }
 
+    /**获取待退款退货订单*/
+    @Override
+    public List<Orders> getShopRefundOrders(Integer merchantId) {
+        Shop shop=merchantMapper.getShopDataByMerchantId(merchantId);
+        return merchantMapper.getShopRefundOrdersByShopId(shop.getId());
+    }
 
-
-
+    /**同意退款退货*/
+    @Override
+    public void agreeRefund(Integer orderId) {
+        //修改商品退款状态
+        Integer rows1=merchantMapper.updateRefundStateByOrderId(orderId);
+        if(rows1!=1){
+            throw new UpdateException("修改订单退款状态出错，请联系系统管理员");
+        }
+        //将钱款退还
+        Orders order=merchantMapper.findOrderByOrderId(orderId);
+        UserAccount userAccount=merchantMapper.findUserAccountByOwnerId(order.getUserId());
+        double amount= userAccount.getAmount()+order.getAmountSum();
+        Integer rows2=merchantMapper.updateUserAccount(amount,order.getUserId());
+        if(rows2!=1){
+            throw new UpdateException("修改用户账户失败，请联系系统管理员！");
+        }
+        UserAccountRecorder userAccountRecorder=new UserAccountRecorder();
+        userAccountRecorder.setUserId(order.getUserId());
+        userAccountRecorder.setInitiatorRole(3);
+        userAccountRecorder.setInitiatorId(order.getShopId());
+        userAccountRecorder.setInitiatorName(order.getShopName());
+        userAccountRecorder.setReceiverRole(1);
+        userAccountRecorder.setReceiverId(order.getUserId());
+        userAccountRecorder.setReceiverName(order.getUserName());
+        userAccountRecorder.setAmount(order.getAmountSum());
+        userAccountRecorder.setTradeTime(LocalDateTime.now());
+        userAccountRecorder.setTradeRecord("商品交易退款");
+        userAccountRecorder.setInAndout(1);
+        Integer rows3=merchantMapper.insertUserAccountRecorder(userAccountRecorder);
+        if(rows3!=1){
+            throw new InsertException("导入用户流水失败，请联系系统管理员！");
+        }
+    }
 }
