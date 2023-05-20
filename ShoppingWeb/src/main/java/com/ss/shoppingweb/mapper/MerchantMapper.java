@@ -22,6 +22,10 @@ public interface MerchantMapper {
     @Select("Select * from shop where idCard=#{idCard}")
     Shop findShopByIdcard(String idCard);
 
+    /**根据商店id查找商店数据*/
+    @Select("Select * from shop where id=#{id}")
+    Shop findShopById(Integer id);
+
     /**根据店铺名查找店铺*/
     @Select("Select * from shop where shopName=#{shopName}")
     Shop findShopByShopName(String shopName);
@@ -213,6 +217,10 @@ public interface MerchantMapper {
     /**查询目前正在举行的活动*/
     @Select("select * from activity ")
     List<Activity> getActivitiesNow();
+
+    /**根据活动ID查找活动数据*/
+    @Select("select * from activity where id = #{id} ")
+    Activity getActivityDataById(Integer id);
 
     /**对指定id的商品申请参加指定id的活动*/
     @Update("update commodity set activityId = #{activityId}, activityState = #{0} where id = #{commodityId}")

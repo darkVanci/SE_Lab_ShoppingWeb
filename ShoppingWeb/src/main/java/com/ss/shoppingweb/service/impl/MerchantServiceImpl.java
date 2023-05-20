@@ -439,11 +439,31 @@ public class MerchantServiceImpl implements MerchantService {
 
     /**对指定id的商品申请参加指定id的活动*/
     public String getInActivity(Integer commodityId,Integer activityId) {
-        ;
-        List<Commodity> commodities = merchantMapper.getCommodityApplyActivity(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
+        //获取商店数据
+        Shop shop = merchantMapper.getShopDataByShopId(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
+        //获取商店中参与活动的商品数据
+        List<Commodity> commodities = merchantMapper.getCommodityApplyActivity(shop.getId());
+        //判断申请参加的活动和之前的活动是否为同一个，否则拒绝申请
         if (commodities.get(0).getActivityId() == activityId) {
-            merchantMapper.getInActivity(commodityId, activityId);
-            return "成功参加活动";
+            //判断商店是否满足阈值要求
+            boolean tag = true;
+            Activity activity = merchantMapper.getActivityDataById(activityId);
+            if(shop.getFunds()<=activity.getFundsLimit()){
+                tag = false;
+            }
+            if(shop.getMonthlySalesMoney()<=activity.getMonthlySalesMoneyLimit()){
+                tag = false;
+            }
+            if(shop.getMonthlySalesCount()<=activity.getMonthlySalesCountLimit()){
+                tag = false;
+            }
+            if(tag) {
+                merchantMapper.getInActivity(commodityId, activityId);
+                return "成功参加活动";
+            }
+            else{
+                return "不满足参加活动的条件";
+            }
         }
         else{
             return  "一个商店只可参加一个活动";

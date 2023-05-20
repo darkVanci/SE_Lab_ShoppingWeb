@@ -16,9 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -439,14 +438,37 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**管理员发起活动*/
-    public void holdActivity(Activity activity){
-        LocalDateTime beginDateTime = LocalDateTime.now();
-        LocalDateTime endDateTime = beginDateTime.plusDays(activity.getHoldingDays());
-        activity.setBeginDateTime(beginDateTime);
-        activity.setEndDateTime(endDateTime);
-        adminMapper.holdActivity(activity);
+    public String holdActivity(Activity activity) {
+        /**获取商场利润账户的数据*/
+        AdminAccount adminAccount = adminMapper.findAdminAccountByOwnerId(1);
+        /**判断资金是否足够开启活动*/
+        if(adminAccount.getAmount()>=activity.getFunds()) {
+            /**进行转账*/
+            adminMapper.updateAccount(adminAccount.getAmount()-activity.getFunds(),1);
+            adminMapper.updateMiddleAccount(adminAccount.getAmount()+activity.getFunds(),1);
+            /**完善数据*/
+            LocalDateTime beginDateTime = LocalDateTime.now();
+            LocalDateTime endDateTime = beginDateTime.plusDays(activity.getHoldingDays());
+            activity.setBeginDateTime(beginDateTime);
+            activity.setEndDateTime(endDateTime);
+            adminMapper.holdActivity(activity);
 
+            //时间到了，结束活动
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    adminMapper.activityOverAffectCommodity(activity.getId());
+                    adminMapper.activityOver(activity.getId());
+                }
+            }, Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+            return  "开启成功";
+        }
+        else {
+            return "余额不足，开启失败";
+        }
     };
+
 
     /**查看指定活动所有待审核的申请*/
     public List<Commodity> findAllCommoditiesWaitingToBeReviewedByActivityId(Integer activityId ){
