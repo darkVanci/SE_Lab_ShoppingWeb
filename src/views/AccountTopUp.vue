@@ -1,21 +1,29 @@
 <template>
-  <div>
-    <el-header>
-      <el-menu mode="horizontal" :ellipsis="false" router>
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
-        <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
-        <el-menu-item index="/accounttopup">充值</el-menu-item>
-        <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
-        <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
-        <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
-        <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
-      </el-menu>
-    </el-header>
-    <el-main>
-      <h1>余额：{{ balance }}</h1>
-      <el-button style="margin-top: 10px; width: 80px; height: 50px" @click="topup">充值</el-button>
-    </el-main>
+  <div class="body">
+    <div class="container1">
+      <div class="wrap">
+        <div class="nav-bar">
+          <el-menu mode="horizontal" :ellipsis="false" router>
+            <el-menu-item index="/">首页</el-menu-item>
+            <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
+            <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
+            <el-menu-item index="/accounttopup">充值</el-menu-item>
+            <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
+            <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
+            <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
+            <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
+          </el-menu>
+        </div>
+      </div>
+    </div>
+    <div class="container2">
+      <div class="wrap">
+        <div class="top-up-box">
+          <h1>余额：{{ balance }}</h1>
+          <el-button style="margin-top: 10px; width: 80px; height: 50px" @click="topup">充值</el-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -142,8 +150,26 @@ export default {
 </script>
 
 <style scoped>
-/*.wrapper {*/
-/*  width: 1250px;*/
-/*  margin: 0 auto;*/
-/*}*/
+.wrap {
+  width: 80vw;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 8px;
+  background-color: #f2f6fc;
+  -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+}
+
+.top-up{
+  position: relative;
+  transform: translateX(-50%);
+  left:50%;
+}
 </style>
