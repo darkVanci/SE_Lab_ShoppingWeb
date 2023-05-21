@@ -148,12 +148,7 @@ public class  UserController extends BaseController{
             Integer activityId=userService.getActivityIdByCommodityId(order1.getCommodityId());
             order1.setActivityId(activityId);
         }
-        //获取满减表
-        List<Integer> ids = new ArrayList<>();
-        for(Orders order:orders){
-            ids.add(order.getCommodityId());
-        }
-        List<ActivityWithReducedPrice> activityWithReducedPriceList = userService.getTotalReducedMoney(ids);
+        List<ActivityWithReducedPrice> activityWithReducedPriceList = userService.getTotalReducedMoney(orders);
         //判断活动资金是否还足够
         for (ActivityWithReducedPrice activityWithReducedPrice : activityWithReducedPriceList){
             //不足够，结束活动，抛出异常
