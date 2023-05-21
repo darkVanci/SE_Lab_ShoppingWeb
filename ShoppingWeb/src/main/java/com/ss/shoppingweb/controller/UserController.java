@@ -306,8 +306,8 @@ public class  UserController extends BaseController{
 
     /**查询某一活动中商品*/
     @RequestMapping("/showCommoditiesInOneActivity")
-    public JsonResult<List<Commodity>> showCommoditiesInOneActivity(Integer id){
-        List<Commodity> data = userService.showCommoditiesInOneActivity(id);
+    public JsonResult<List<Commodity>> showCommoditiesInOneActivity(@RequestBody Activity activity){
+        List<Commodity> data = userService.showCommoditiesInOneActivity(activity.getId());
         return new JsonResult<>(OK,data);
     };
 
@@ -320,7 +320,7 @@ public class  UserController extends BaseController{
 
     /**首页搜索商品，按销量排序*/
     @RequestMapping("/searchCommodity")
-    public JsonResult<List<Commodity>> searchCommodity(String string){
+    public JsonResult<List<Commodity>> searchCommodity(@RequestBody String string){
         List<Commodity> data = userService.searchCommodity(string);
         return new JsonResult<>(OK,data);
     };
