@@ -17,7 +17,8 @@
 
         <el-table-column label="数量">
           <template v-slot="{ row }">
-            <el-input-number v-model="row.commodityNum" @change="handleChange(row)" :min="0" :max="10000"></el-input-number> 
+            <el-input-number v-model="row.commodityNum" @change="handleChange(row)" :min="0"
+              :max="10000"></el-input-number>
             <!-- :min="1" -->
           </template>
         </el-table-column>
@@ -68,10 +69,40 @@ export default {
     }
   },
   methods: {
-    handleChange(row) { 
+    handleChange(row) {
 
-        row.totalPrice = row.price * row.commodityNum // 重新计算totalprice
-      
+      row.totalPrice = row.price * row.commodityNum // 重新计算totalprice
+
+      if (row.commodityNum === 0) {
+        const ids = [row.id]
+      const token = localStorage.getItem('token')
+      const formData = new FormData()
+      formData.append('ids', JSON.stringify(ids))
+        this.$axios
+          .post('/user/deleteShoppingCart', formData, { headers: { token: `${token}` } })
+          .then((response) => {
+            if (response.data.state == 200) {
+              this.$message.success('删除成功')
+            } else {
+              this.$message.error('删除失败')
+            }
+
+            // 重新加载数据
+            this.$axios
+              .post('/user/showShoppingCart', { userId: this.id }, { headers: { token: `${token}` } })
+              .then((response) => {
+                this.tableData = response.data.data
+              })
+              .catch((error) => {
+                console.log(error)
+              })
+          })
+          .catch((error) => {
+            console.log(error)
+            this.$message.error(error)
+          })
+      }
+
     },
     selectionHandler(val) {
       this.multipletable = val
