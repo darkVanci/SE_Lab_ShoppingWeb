@@ -5,7 +5,7 @@ import com.ss.shoppingweb.exception.UpdateException;
 import com.ss.shoppingweb.service.UserService;
 import com.ss.shoppingweb.utils.JsonResult;
 import com.ss.shoppingweb.utils.JwtUtils;
-import com.sun.org.apache.xpath.internal.operations.Or;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -297,6 +297,20 @@ public class  UserController extends BaseController{
     @RequestMapping("/showCommoditiesInOneActivity")
     public JsonResult<List<Commodity>> showCommoditiesInOneActivity(Integer id){
         List<Commodity> data = userService.showCommoditiesInOneActivity(id);
+        return new JsonResult<>(OK,data);
+    };
+
+    /**首页推荐商品，按销量*/
+    @RequestMapping("/showRecommendedCommodities")
+    public JsonResult<List<Commodity>> showRecommendedCommodities(){
+        List<Commodity> data = userService.showRecommendedCommodities();
+        return new JsonResult<>(OK,data);
+    };
+
+    /**首页搜索商品，按销量排序*/
+    @RequestMapping("/searchCommodity")
+    public JsonResult<List<Commodity>> searchCommodity(String string){
+        List<Commodity> data = userService.searchCommodity(string);
         return new JsonResult<>(OK,data);
     };
 }

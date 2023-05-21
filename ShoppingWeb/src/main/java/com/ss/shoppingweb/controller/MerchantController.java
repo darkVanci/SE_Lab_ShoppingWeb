@@ -145,8 +145,8 @@ public class MerchantController extends BaseController {
             String extname = originalFilename.substring(originalFilename.lastIndexOf('.'));//这是文件扩展名
             String newFileName = UUID.randomUUID().toString() + extname;//这是随机名+文件扩展名
             //将文件存储在服务器的磁盘目录
-            theImage.transferTo(new File("D:/images/" + newFileName));
-            String add = "D:/images/" + newFileName;
+            theImage.transferTo(new File("/images/" + newFileName));
+            String add = "/images/" + newFileName;
             imageUrl = imageUrl + add + ",";
         }
         int length = imageUrl.length();
@@ -229,8 +229,8 @@ public class MerchantController extends BaseController {
                 String extname = originalFilename.substring(originalFilename.lastIndexOf('.'));//这是文件扩展名
                 String newFileName = UUID.randomUUID().toString() + extname;//这是随机名+文件扩展名
                 //将文件存储在服务器的磁盘目录
-                theImage.transferTo(new File("D:/images/" + newFileName));
-                String add = "D:/images/" + newFileName;
+                theImage.transferTo(new File("/images/" + newFileName));
+                String add = "/images/" + newFileName;
                 imageUrl = imageUrl + add + ",";
                 int length = imageUrl.length();
                 url = imageUrl.substring(0, length - 1);

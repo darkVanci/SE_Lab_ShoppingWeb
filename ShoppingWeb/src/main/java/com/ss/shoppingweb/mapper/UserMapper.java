@@ -315,6 +315,14 @@ public interface UserMapper {
 
     @Update("Update activity set funds=#{funds} where id = #{activityId} ")
     Integer updateActivityFunds(Integer activityId,double funds);
+
+    /**首页推荐商品，按销量*/
+    @Select("Select * from commodity order by monthlySalesCount")
+    List<Commodity> showRecommendedCommodities();
+
+    /**首页搜索商品，按销量排序*/
+    @Select("SELECT * FROM commodity WHERE commodityName LIKE CONCAT('%', #{string}, '%')")
+    List<Commodity> searchCommodity(String string );
 }
 
 

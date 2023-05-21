@@ -4,6 +4,7 @@ import com.ss.shoppingweb.entity.*;
 import com.ss.shoppingweb.exception.*;
 import com.ss.shoppingweb.mapper.UserMapper;
 import com.ss.shoppingweb.service.UserService;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -219,14 +220,7 @@ public class UserServiceImpl implements UserService {
             if (shoppingCart.getBusinessState() == 1) {
                 String urls = shoppingCart.getImageUrl();
                 String[] realUrls = urls.split(",");
-                List<String> images = new ArrayList<String>();
-                for (String url : realUrls) {
-                    File file = new File(url);
-                    byte[] imageData = Files.readAllBytes(file.toPath());
-                    String imageDataString = Base64.getEncoder().encodeToString(imageData);
-                    images.add(imageDataString);
-                }
-                shoppingCart.setImageString(images);
+                shoppingCart.setImageUrls(realUrls);
             }
         }
         return shoppingCarts;
@@ -617,6 +611,17 @@ public class UserServiceImpl implements UserService {
     /**查询某一活动中商品*/
     public List<Commodity> showCommoditiesInOneActivity(Integer id){
         return  userMapper.showCommoditiesInOneActivity(id);
+    };
+
+    /**首页推荐商品，按销量*/
+    public List<Commodity> showRecommendedCommodities(){
+        return userMapper.showRecommendedCommodities();
+    };
+
+
+    /**首页搜索商品，按销量排序*/
+    public List<Commodity> searchCommodity(String string){
+        return  userMapper.searchCommodity(string);
     };
 
 

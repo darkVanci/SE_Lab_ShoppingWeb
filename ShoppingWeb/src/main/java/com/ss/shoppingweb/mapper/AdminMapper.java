@@ -238,6 +238,11 @@ public interface AdminMapper {
     @Select("select * from commodity where id = #{id}" )
     Commodity getCommodityDataByCommodityId(Integer id);
 
+
+    /**根据活动ID查找活动数据*/
+    @Select("select * from activity where id = #{id} ")
+    Activity getActivityDataById(Integer id);
+
 }
 
 

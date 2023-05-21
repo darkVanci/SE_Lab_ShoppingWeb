@@ -21,6 +21,7 @@ public class AccountRecorderBase {
     private double amount;//金额
     private LocalDateTime tradeTime;//交易时间
     private String tradeRecord;//交易注释
+    private int state;
 
     private Integer inAndout;//-1表示出账，1表示入账
 }

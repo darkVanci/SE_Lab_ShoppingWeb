@@ -80,4 +80,7 @@ public interface AdminService {
 
     /**对指定商品驳回参加活动*/
     void refuseInActivity(Integer id);
+
+    /**根据活动ID查找活动数据*/
+    Activity getActivityDataById(Integer id);
 }
