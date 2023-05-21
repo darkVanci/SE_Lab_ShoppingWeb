@@ -6,7 +6,9 @@
         <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
         <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
         <el-menu-item index="/accounttopup">充值</el-menu-item>
-        <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
+        <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
+        <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
+        <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
         <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
       </el-menu>
     </el-header>
