@@ -8,7 +8,9 @@
             <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
             <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
             <el-menu-item index="/accounttopup">充值</el-menu-item>
-            <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
+            <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
+            <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
+            <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
             <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
           </el-menu>
         </div>
@@ -23,7 +25,7 @@
           <div class="icon"></div>
           <ul style="list-style-type: none">
             <li class="name"><h1>{{ info.name }}</h1></li>
-            <li class="email"><h4>{{ info.email }}</h4></li>
+            <li class="email"><h2>{{ info.email }}</h2></li>
             <li class="details">电话：{{ info.tel }}</li>
             <li class="details">身份证：{{ info.id }}</li>
             <li class="details">余额：{{ info.balance }}</li>
@@ -31,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="container3">
+    <div class="container3" v-if="isUser">
       <div class="wrap">
         <div class="header">
           <p>我的收货地址
@@ -55,7 +57,7 @@
                 min-width="40%">
             </el-table-column>
             <el-table-column
-                prop="tel"
+                prop="phone"
                 label="电话号码"
                 min-width="30%">
             </el-table-column>
@@ -123,89 +125,19 @@ export default {
   data() {
     return {
       info: {
-        name: 'Lecky',
-        email: 'leckycheong135@gmail.com',
-        tel: '15920791357',
-        id: '123456789123',
-        balance: '100¥',
+        name: '',
+        email: '',
+        tel: '',
+        id: '',
+        balance: '¥',
       },
-      addressData: [{
-        date: '123',
-        name: 'Hi',
-        province: 'a',
-        tel: '123456',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }, {
-        date: '123',
-        name: 'Lecky',
-        province: 'a',
-        city: 'a',
-        address: 'a',
-        zip: '123'
-      }],
+      addressData: [],
       addressForm: {
         name: '',
         address: '',
         tel: ''
       },
+      chosenId: '',
       dialogFormVisible: false,
       editDialogFormVisible: false,
       formLabelWidth: '60px',
@@ -222,35 +154,115 @@ export default {
       this.addressForm.name = '';
     },
     editAddressInitiate(param) {
-      this.addressForm=param.row;
+      this.addressForm.name = param.row.name;
+      this.addressForm.tel = param.row.phone;
+      this.addressForm.address = param.row.address;
+      this.chosenId = param.row.id;
       this.editDialogFormVisible = true;
     },
     newAddress() {
       this.dialogFormVisible = false;
-      ElMessage({
-        message: "新增成功",
-        type: "success"
-      });
-      setTimeout(function () {
-        location.reload();
-      }, 1800);
+      const token = localStorage.getItem('token');
+      this.$axios
+          .post('/user/addShippingAddress', {
+                name: this.addressForm.name,
+                phone: this.addressForm.tel,
+                address: this.addressForm.address
+              }
+              , {
+                headers: {
+                  token: `${token}`
+                }
+              })
+          .then((response) => {
+            console.log(response.data);
+            this.$axios
+                .get('/user/getShippingAddress', {
+                  headers: {
+                    token: `${token}`
+                  }
+                })
+                .then((response) => {
+                  this.addressData = response.data.data;
+                })
+                .catch((error) => {
+                  console.log(error)
+                })
+            ElMessage({
+              message: "新增成功",
+              type: "success"
+            });
+          })
     },
     editAddress() {
       this.editDialogFormVisible = false;
+      const token = localStorage.getItem('token');
+      this.$axios
+          .post('/user/updateShippingAddress', {
+                id: this.chosenId,
+                name: this.addressForm.name,
+                phone: this.addressForm.tel,
+                address: this.addressForm.address
+              }
+              , {
+                headers: {
+                  token: `${token}`
+                }
+              })
+          .then((response) => {
+            console.log(response.data);
+            this.$axios
+                .get('/user/getShippingAddress', {
+                  headers: {
+                    token: `${token}`
+                  }
+                })
+                .then((response) => {
+                  this.addressData = response.data.data;
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+          })
       ElMessage({
         message: "修改成功",
         type: "success"
       });
-      setTimeout(function () {
-        location.reload();
-      }, 1800);
     },
-    deleteAddress(param){
+    deleteAddress(param) {
+      // param.row to use the object
+
+      const token = localStorage.getItem('token')
       this.$confirm('此操作将永久删除该地址, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$axios
+            .post('/user/deleteShippingAddress', {
+                  id: param.row.id
+                }
+                , {
+                  headers: {
+                    token: `${token}`
+                  }
+                })
+            .then((response) => {
+              console.log(response.data);
+              this.$axios
+                  .get('/user/getShippingAddress', {
+                    headers: {
+                      token: `${token}`
+                    }
+                  })
+                  .then((response) => {
+                    this.addressData = response.data.data;
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  })
+            })
+
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -258,7 +270,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消操作'
         });
       });
     }
@@ -276,18 +288,16 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.info.name = response.data.data.name;
-          this.info.email = response.data.data.email;
           this.info.tel = response.data.data.phone;
           this.info.id = response.data.data.idCard;
-          this.id = response.data.data.id;
-          if (response.data.message == 1) {
+          this.info.email = response.data.data.email;
+          if (response.data.message == '1') {
             this.isUser = true;
-          } else if (response.data.message == 2) {
+          } else if (response.data.message == '2') {
             this.isMerchant = true;
-          } else {
+          } else if (response.data.message == '3') {
             this.isAdmin = true;
           }
-          console.log('this.id = ' + this.id)
         })
         .catch((error) => {
           console.log(error)
@@ -309,15 +319,14 @@ export default {
           console.log(error)
         })
 
-    //getAddress
     this.$axios
-        .get('/getAddress', {
+        .get('/user/getShippingAddress', {
           headers: {
             token: `${token}`
           }
         })
         .then((response) => {
-
+          this.addressData = response.data.data;
         })
         .catch((error) => {
           console.log(error);
@@ -328,14 +337,6 @@ export default {
 </script>
 
 <style scoped>
-.body {
-  font-family: 'Microsoft YaHei';
-  box-sizing: border-box;
-}
-
-.background {
-  height: 100vh;
-}
 
 .wrap {
   width: 80vw;

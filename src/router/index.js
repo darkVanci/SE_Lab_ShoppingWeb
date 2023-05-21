@@ -98,9 +98,29 @@ const router = createRouter({
       component: () => import('../views/AccountMerchantInfo.vue')
     },
     {
-      path: '/accountwaterbill',
-      name: 'accountwaterbill',
-      component: () => import('../views/AccountWaterBill.vue')
+      path: '/userwaterbill',
+      name: 'userwaterbill',
+      component: () => import('../views/AccountWaterBill/UserWaterBill.vue')
+    },
+    {
+      path: '/merchantwaterbill',
+      name: 'merchantwaterbill',
+      component: () => import('../views/AccountWaterBill/MerchantWaterBill.vue')
+    },
+    {
+      path: '/shopwaterbill',
+      name: 'shopwaterbill',
+      component: () => import('../views/AccountWaterBill/ShopWaterBill.vue')
+    },
+    {
+      path: '/midwaterbill',
+      name: 'midwaterbill',
+      component: () => import('../views/AccountWaterBill/MidWaterBill.vue')
+    },
+    {
+      path: '/profitwaterbill',
+      name: 'profitwaterbill',
+      component: () => import('../views/AccountWaterBill/ProfitWaterBill.vue')
     },
     {
       path: '/accountshopdelete',
@@ -126,11 +146,11 @@ const router = createRouter({
       path: '/ordersdisplay',
       name: 'ordersdisplay',
       component: () => import('../views/OrdersDisplay.vue'),
-      children:[{
-        path: '/ordersdisplay/tobepaid',
-        name: 'tobepaid',
-        component: () => import('../views/ToBePaid.vue')
-      }]
+    },
+    {
+      path: '/merchantorderconfirm',
+      name: 'merchantorderconfirm',
+      component: () => import('../views/MerchantOrderConfirm.vue')
     },
     {
       path: '/ordersdisplay/tobepaid',

@@ -3,13 +3,13 @@
     <div class="container1">
       <div class="wrap">
         <div class="nav-bar">
-          <el-menu mode="horizontal" :ellipsis="false" router>
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
-            <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
-            <el-menu-item index="/accounttopup">充值</el-menu-item>
-            <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
-            <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
+          <el-menu mode="horizontal" :ellipsis="false" router default-active="/profitwaterbill">
+            <el-menu-item index="/accountuser">返回</el-menu-item>
+            <el-menu-item index="/userwaterbill" v-if="isUser">个人流⽔</el-menu-item>
+            <el-menu-item index="/merchantwaterbill" v-if="isMerchant">商户流⽔</el-menu-item>
+            <el-menu-item index="/shopwaterbill" v-if="isMerchant">商店流⽔</el-menu-item>
+            <el-menu-item index="/profitwaterbill" v-if="isAdmin">商城利润账户流⽔</el-menu-item>
+            <el-menu-item index="/midwaterbill" v-if="isAdmin">中间商城账户流⽔</el-menu-item>
           </el-menu>
         </div>
       </div>
@@ -18,7 +18,7 @@
       <div class="wrap">
         <div class="header">
           <p>
-            <span>转账流⽔</span>
+            <span>{{ billTitle }}</span>
             &nbsp;
             <el-select v-model="timeIntervalValue" placeholder="请选择">
               <el-option
@@ -29,31 +29,32 @@
                   @click="setTimeInterval">
               </el-option>
             </el-select>
-            <el-select v-model="inAndOutValue" placeholder="请选择">
-              <el-option
-                  v-for="item in inAndOutOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-              </el-option>
-            </el-select>
+            <!--            <el-select v-model="inAndOutValue" placeholder="请选择">-->
+            <!--              <el-option-->
+            <!--                  v-for="item in inAndOutOption"-->
+            <!--                  :key="item.value"-->
+            <!--                  :label="item.label"-->
+            <!--                  :value="item.value">-->
+            <!--              </el-option>-->
+            <!--            </el-select>-->
           </p>
         </div>
         <div class="water-bill">
-          <el-table :data="billdata" style="width: 100%" stripe show-summary max-height="1000">
+          <el-table :data="billdata" style="width: 100%" stripe max-height="500">
             <el-table-column prop="initiatorName" label="转出⽅"></el-table-column>
             <el-table-column prop="receiverName" label="转⼊⽅"></el-table-column>
             <el-table-column prop="amount" label="⾦额" sortable></el-table-column>
             <el-table-column prop="tradeRecord" label="备注信息"></el-table-column>
             <el-table-column prop="tradeTime" label="日期"></el-table-column>
           </el-table>
-          <!--          <el-table :data="billdata" style="width: 100%">-->
-          <!--            <el-table-column prop="initiatorName" label="from"></el-table-column>-->
-          <!--            <el-table-column prop="receiverName" label="to"></el-table-column>-->
-          <!--            <el-table-column prop="amount" label="value"></el-table-column>-->
-          <!--            <el-table-column prop="tradeRecord" label="traderecord"></el-table-column>-->
-          <!--          </el-table>-->
         </div>
+      </div>
+    </div>
+    <div class="container3">
+      <div class="wrap">
+        <h2>总收入：{{ income }}</h2>
+        <h2>总支出：{{ spent }}</h2>
+        <h2>利润：{{ profit }}</h2>
       </div>
     </div>
   </div>
@@ -61,9 +62,10 @@
 
 <script>
 export default {
-  name: "AccountWaterBill",
+  name: "ProfitWaterBill",
   data() {
     return {
+      billTitle: '商城利润账户流⽔',
       billdata: [],
       timeIntervalOption: [{
         value: 0,
@@ -87,53 +89,46 @@ export default {
         label: '收入'
       }],
       inAndOutValue: 0,
+      income: 0,
+      spent: 0,
+      profit: 0,
       isUser: false,
       isMerchant: false,
       isAdmin: false,
-      bdata: [{
-        from: 'ME',
-        to: 'HE',
-        value: '123',
-        description: 'Hallo',
-        date: '2023/5/14'
-      }, {
-        from: 'ME',
-        to: 'HE',
-        value: '-123',
-        description: 'Hallo',
-        date: '2023/5/14'
-      }, {
-        from: 'ME',
-        to: 'HE',
-        value: '123',
-        description: 'Hallo',
-        date: '2023/5/14'
-      }, {
-        from: 'ME',
-        to: 'HE',
-        value: '123',
-        description: 'Hallo',
-        date: '2023/5/14'
-      }]
     }
   },
   methods: {
-    setTimeInterval(){
+    setTimeInterval() {
       const token = localStorage.getItem('token')
-      let url="/getAccountRecorder?timeInterval="+this.timeIntervalValue;
+      let url = "/getAccountRecorder?timeInterval=" + this.timeIntervalValue;
       this.$axios
-          .get(url,{
+          .get(url, {
             headers: {
               token: `${token}`
             }
           })
           .then((response) => {
-            this.billdata=response.data.data;
+            this.billdata = response.data.data;
+            this.calculateSummary();
             console.log(response.data);
           })
           .catch((error) => {
             console.log(error)
           })
+    },
+    calculateSummary() {
+      this.income = 0;
+      this.spent = 0;
+      this.profit = 0;
+      for (let i = 0; i < this.billdata.length; i++) {
+        if (this.billdata[i].inAndout == 1) {
+          this.income += this.billdata[i].amount;
+          this.profit += this.billdata[i].amount;
+        } else {
+          this.spent -= this.billdata[i].amount;
+          this.profit -= this.billdata[i].amount;
+        }
+      }
     }
   },
   mounted() {
@@ -159,13 +154,14 @@ export default {
           console.log(error)
         })
     this.$axios
-        .get('/getAccountRecorder?timeInterval=0',{
+        .get('/getAccountRecorder?timeInterval=0', {
           headers: {
             token: `${token}`
           }
         })
         .then((response) => {
-          this.billdata=response.data.data;
+          this.billdata = response.data.data;
+          this.calculateSummary();
           console.log(response.data);
         })
         .catch((error) => {
@@ -213,5 +209,9 @@ export default {
   -webkit-box-shadow: -1px 0px 21px 0px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: -1px 0px 21px 0px rgba(0, 0, 0, 0.25);
   box-shadow: -1px 0px 21px 0px rgba(0, 0, 0, 0.25);
+}
+
+.container3 {
+  margin-top: 20px;
 }
 </style>

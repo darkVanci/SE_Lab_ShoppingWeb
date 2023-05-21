@@ -1,15 +1,21 @@
 <template>
-  <el-container>
-    <el-header>
-      <el-menu mode="horizontal" :ellipsis="false" router>
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
-        <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
-        <el-menu-item index="/accounttopup">充值</el-menu-item>
-        <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
-        <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
-      </el-menu>
-    </el-header>
+  <div class="body">
+    <div class="container1">
+      <div class="wrap">
+        <div class="nav-bar">
+          <el-menu mode="horizontal" :ellipsis="false" router>
+            <el-menu-item index="/">首页</el-menu-item>
+            <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
+            <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
+            <el-menu-item index="/accounttopup">充值</el-menu-item>
+            <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
+            <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
+            <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
+            <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
+          </el-menu>
+        </div>
+      </div>
+    </div>
     <el-header style="margin-top: 10px; font-size: 30px">商家信息</el-header>
     <div class="wrapper">
       <el-main>
@@ -21,7 +27,7 @@
         <el-button style="background-color: indianred; color: white" @click="del">删除商店</el-button>
       </el-main>
     </div>
-  </el-container>
+  </div>
 </template>
 
 <script>
@@ -127,19 +133,20 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-  width: 1250px;
-  margin: 0 auto;
+.wrap {
+  width: 80vw;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
-/*.info-container {*/
-/*  width: 500px;*/
-/*  height: auto;*/
-/*  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  position: absolute;*/
-/*  left: 50%;*/
-/*  transform: translateX(-50%);*/
-/*}*/
+.header {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 8px;
+  background-color: #f2f6fc;
+  -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+}
 </style>

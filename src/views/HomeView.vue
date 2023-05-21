@@ -9,7 +9,11 @@
             <el-menu-item index="/register" v-if="!isLogged" class="menu-item">注册</el-menu-item>
             <el-menu-item index="/login" v-if="!isLogged" class="menu-item">登录</el-menu-item>
             <el-menu-item index="/accountuser" v-if="isLogged" class="menu-item">用户中心</el-menu-item>
-            <el-menu-item index="/shoppingcart" v-if="isLogged && !isMerchant && !isAdmin" class="menu-item">购物车
+            <el-menu-item index="/shoppingcart" v-if="isLogged && !isMerchant && !isAdmin" class="menu-item"
+            >购物车
+            </el-menu-item>
+            <el-menu-item index="/ordersdisplay" v-if="isLogged" class="menu-item"
+            >订单
             </el-menu-item>
             <el-menu-item index="/setup" v-if="isLogged && isMerchant" class="menu-item">开店</el-menu-item>
             <el-menu-item index="/backstage" v-if="isLogged && isAdmin" class="menu-item">后台</el-menu-item>

@@ -1,51 +1,61 @@
 <template>
-  <el-container>
-    <el-header>
-      <el-menu mode="horizontal" :ellipsis="false" router>
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
-        <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
-        <el-menu-item index="/accounttopup">充值</el-menu-item>
-        <el-menu-item index="/accountwaterbill">转账流⽔</el-menu-item>
-        <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
-      </el-menu>
-    </el-header>
-    <div class="wrapper">
-      <el-header style="margin-top: 10px; font-size: 30px">个⼈信息修改</el-header>
-      <el-main>
-        <el-form size="large" label-width="auto" id="form" :disabled="disabled">
-          <el-form-item label="用户名">
-            <el-input v-model="username" @blur="usernameBlur" required>用户名</el-input>
-            <div>3 &le; {{ username.length }} &le; 10 &nbsp;&nbsp;</div>
-            <div id="username_err" class="err_msg" v-show="!usernameFlag">用户名格式错误</div>
-          </el-form-item>
-          <el-form-item label="密码">
-            <el-input v-model="password" @blur="passwordBlur" required>密码</el-input>
-            <div>6 &le; {{ password.length }} &le; 32 &nbsp;&nbsp;</div>
-            <div id="password_err" class="err_msg" v-show="!passwordFlag">密码格式错误</div>
-          </el-form-item>
-          <el-form-item label="手机号">
-            <el-input v-model="phone" @blur="phoneBlur" required>手机号</el-input>
-            <div id="phone_err" class="err_msg" v-show="!phoneFlag">手机号格式错误</div>
-          </el-form-item>
-          <el-form-item label="身份证号">
-            <el-input v-model="identity" @blur="identityBlur" required disabled>身份证号</el-input>
-            <div id="identity_err" class="err_msg" v-show="!identityFlag">身份证号格式错误</div>
-          </el-form-item>
-          <el-form-item label="邮箱">
-            <el-input v-model="email" @blur="emailBlur" required>邮箱</el-input>
-            <div id="email_err" class="err_msg" v-show="!emailFlag">邮箱格式错误</div>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="confirm">确认</el-button>
-            <el-button @click="cancel">取消</el-button>
-            <div class="err_msg">{{ message }}</div>
-          </el-form-item>
-        </el-form>
-        <el-button type="primary" @click="edit">修改</el-button>
-      </el-main>
+  <div class="body">
+    <div class="container1">
+      <div class="wrap">
+        <div class="nav-bar">
+          <el-menu mode="horizontal" :ellipsis="false" router>
+            <el-menu-item index="/">首页</el-menu-item>
+            <el-menu-item index="/accountuser">个⼈信息</el-menu-item>
+            <el-menu-item index="/accountmerchant" v-if="isMerchant || isAdmin">商家信息</el-menu-item>
+            <el-menu-item index="/accounttopup">充值</el-menu-item>
+            <el-menu-item index="/userwaterbill" v-if="isUser">转账流⽔</el-menu-item>
+            <el-menu-item index="/merchantwaterbill" v-if="isMerchant">转账流⽔</el-menu-item>
+            <el-menu-item index="/profitwaterbill" v-if="isAdmin">转账流⽔</el-menu-item>
+            <el-menu-item index="/accountmodify" v-if="isUser || isMerchant">个⼈信息修改</el-menu-item>
+          </el-menu>
+        </div>
+      </div>
     </div>
-  </el-container>
+    <div class="container2">
+      <div class="wrap">
+        <div class="header">
+          <p>个⼈信息修改</p>
+        </div>
+        <div class="form">
+          <el-form size="large" label-width="auto" id="form" :disabled="disabled">
+            <el-form-item label="用户名">
+              <el-input v-model="username" @blur="usernameBlur" required>用户名</el-input>
+              <div>3 &le; {{ username.length }} &le; 10 &nbsp;&nbsp;</div>
+              <div id="username_err" class="err_msg" v-show="!usernameFlag">用户名格式错误</div>
+            </el-form-item>
+            <el-form-item label="密码">
+              <el-input v-model="password" @blur="passwordBlur" required>密码</el-input>
+              <div>6 &le; {{ password.length }} &le; 32 &nbsp;&nbsp;</div>
+              <div id="password_err" class="err_msg" v-show="!passwordFlag">密码格式错误</div>
+            </el-form-item>
+            <el-form-item label="手机号">
+              <el-input v-model="phone" @blur="phoneBlur" required>手机号</el-input>
+              <div id="phone_err" class="err_msg" v-show="!phoneFlag">手机号格式错误</div>
+            </el-form-item>
+            <el-form-item label="身份证号">
+              <el-input v-model="identity" @blur="identityBlur" required disabled>身份证号</el-input>
+              <div id="identity_err" class="err_msg" v-show="!identityFlag">身份证号格式错误</div>
+            </el-form-item>
+            <el-form-item label="邮箱">
+              <el-input v-model="email" @blur="emailBlur" required>邮箱</el-input>
+              <div id="email_err" class="err_msg" v-show="!emailFlag">邮箱格式错误</div>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="confirm">确认</el-button>
+              <el-button @click="cancel">取消</el-button>
+              <div class="err_msg">{{ message }}</div>
+            </el-form-item>
+          </el-form>
+          <el-button type="primary" @click="edit">修改</el-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -179,11 +189,11 @@ export default {
           }
         })
         .then((response) => {
-          this.username=response.data.data.username;
+          this.username = response.data.data.username;
           this.identity = response.data.data.idCard;
           this.username = response.data.data.username;
           this.phone = response.data.data.phone;
-          this.email= response.data.data.email;
+          this.email = response.data.data.email;
           if (response.data.message == 1) {
             this.isUser = true;
           } else if (response.data.message == 2) {
@@ -205,9 +215,35 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-  width: 1250px;
-  margin: 0 auto;
+.wrap {
+  width: 80vw;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.container2{
+  margin-top: 50px;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 40px;
+  background-color: #f2f6fc;
+  -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15);
+}
+.header p {
+  position: relative;
+  transform: translateY(-50%);
+  left: 2%;
+  top: 50%;
+}
+
+.form{
+
 }
 
 .err_msg {
