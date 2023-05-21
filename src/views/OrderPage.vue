@@ -35,7 +35,8 @@
             <h2>收货信息</h2>
             <label for="address">选择收货地址：</label>
             <select id="address" name="address" v-model="selectedAddress">
-                <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address }}</option>
+                <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address.address }} {{
+                    address.name }} {{ address.phone }}</option>
             </select>
             <div v-show="showNewAddressForm">
                 <label for="new-address">新建收货地址：</label>
@@ -86,7 +87,7 @@ export default {
     mounted() {
         this.selectedRows = JSON.parse(localStorage.getItem('selectedRows'));
         const token = localStorage.getItem('token')
-        //获取商品信息
+        //获取地址信息
         this.$axios
             .get(
                 '/user/getShippingAddress',
@@ -97,7 +98,7 @@ export default {
                 }
             )
             .then((response) => {
-                this.addresses = response.data
+                this.addresses = response.data.data
             })
             .catch((error) => {
                 console.log(error)
@@ -118,12 +119,27 @@ export default {
         submitOrder() {
             // TODO: 提交订单
             const token = localStorage.getItem('token')
+            let subSelectedRows = [];
             this.selectedRows.forEach((product) => {
-                product.address = this.selectedAddress;
+                let newProduct = {
+                    commodityName: product.commodityName, 
+                    commodityNum: product.commodityNum, 
+                    commodityPrice: product.price, 
+                    amountSum: product.totalPrice,
+                    shopName: product.commodityShopName,
+                    shopId: product.shopId,
+                    commodityId: product.commodityId,
+                };
+                subSelectedRows.push(newProduct);
+            });
+            subSelectedRows.forEach((product) => {
+                product.address = this.selectedAddress.address;
+                product.name = this.selectedAddress.name;
+                product.phone = this.selectedAddress.phone;
             });
             this.$axios
                 .post(
-                    '/user/createOrders', this.selectedRows,
+                    '/user/createOrders', subSelectedRows,
                     {
                         headers: {
                             token: `${token}`
@@ -133,9 +149,10 @@ export default {
                 .then((response) => {
                     console.log(response.data)
                     if (response.data.state == 200) {
+                        this.$message.success("下单成功")
                         this.$router.push({ name: '' })//直接跳到订单管理中的待支付页面
                     } else {
-                        this.$message.alert(response.data.message)
+                        this.$message.error(response.data.message)
                     }
                 })
                 .catch((error) => {
