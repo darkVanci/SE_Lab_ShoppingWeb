@@ -53,6 +53,28 @@
                 </el-form>
                 <el-button @click="handleSubmit" type="primary">提交</el-button>
             </div>
+
+            <div class="content">
+                <h1>活动申请列表</h1>
+                <el-space wrap>
+                    <el-card v-for="good in goods" :key="good.goodId" class="box-card" style="width: 250px">
+                        <template #header>
+                            <div class="card-header">
+                                <div class="inf">
+                                    <b>名称:</b> {{ good.commodityName }} <br />
+                                    <b>价格:</b> {{ good.price }}元 <br />
+                                    <b>简介:</b> {{ good.introduction }}
+                                </div>
+                            </div>
+                        </template>
+                        <div class="card-footer">
+                            <el-button class="button" @click="allow(good.id)" type="success" plain>批准</el-button>
+                            <el-button class="button" @click="disallow(good.id)" type="danger" plain>驳回</el-button>
+                        </div>
+                    </el-card>
+                </el-space>
+            </div>
+
         </el-main>
     </el-container>
 </template>
@@ -70,12 +92,13 @@ export default {
             monthlySalesMoneyLimit: '',//商店月销售额限制
             monthlySalesCountLimit: '',//商店月销售量限制
             types: [],
+            goods: [],
         };
     },
     mounted() {
         const token = localStorage.getItem('token')
         this.$axios
-            .get('/admin/showAllCommodityToBeReviewed', {
+            .get('/admin/findAllCommoditiesWaitingToBeReviewed', {
                 headers: {
                     token: `${token}`
                 }
@@ -83,18 +106,67 @@ export default {
 
             .then((response) => {
                 console.log(response.data)
-                this.character = response.data.message
-                if (this.character != 3) {
-                    this.$router.push({ name: 'home' })
-                }
                 this.goods = response.data.data
-                console.log(this.goods)
             })
             .catch((error) => {
                 console.log(error)
             })
     },
     methods: {
+        allow(goodId) {
+            const token = localStorage.getItem('token')
+            this.$axios
+                .post(
+                    '/admin/allowInActivity',
+                    { id: goodId },
+                    {
+                        headers: {
+                            token: `${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    this.response = response.data
+                    console.log(this.response)
+                    if (this.response.state == 200) {
+                        this.$message.success('批准成功')
+                        location.reload() //刷新
+                    } else {
+                        this.$message.error(this.response.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error(error)
+                })
+        },
+        disallow(goodId) {
+            const token = localStorage.getItem('token')
+            this.$axios
+                .post(
+                    '/admin/refuseInActivity',
+                    { id: goodId,},
+                    {
+                        headers: { token: `${token}`, 'Content-Type': 'application/json' }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    this.response = response.data
+                    if (this.response.state == 200) {
+                        this.$message.success('驳回成功')
+                        location.reload()
+                    } else {
+                        this.$message.error(this.response.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error(error)
+                })
+        },
         handleSubmit() {
             const token = localStorage.getItem('token')
             this.$axios
@@ -103,13 +175,13 @@ export default {
                     {
                         holdingDays: this.holdingDays,
                         funds: this.funds,
-                        commodityCategories: this.commodityCategories,
+                        commodityCategories: this.types.join(','),
                         x: this.X,
                         y: this.Y,
                         fundsLimit: this.fundsLimit,
                         monthlySalesMoneyLimit: this.monthlySalesMoneyLimit,
                         monthlySalesCountLimit: this.monthlySalesCountLimit,
-                        types: this.types.join(','),
+                        // types: 
                     },
                     {
                         headers: {

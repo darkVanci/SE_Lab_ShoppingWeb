@@ -33,7 +33,7 @@
             <div class="picture">
               <img :src="good.imageUrls[0]" :style="{ maxHeight: '200px', maxWidth: '200px' }" /> 
             </div>
-            {{ good.price }} 元
+            {{ good.price }} 元 &nbsp  {{ good.categoryName }}
             <br />
             <el-input-number v-model="good.businessState" v-if="isLogged && !isMerchant && !isAdmin"
               @change="handleChange" size="small" :min="0" :max="10000" label="描述文字"></el-input-number>

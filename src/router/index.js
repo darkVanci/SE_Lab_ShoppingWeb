@@ -147,11 +147,11 @@ const router = createRouter({
       name: 'activitypage',
       component: () => import('../views/ActivityPage.vue'),
     },
-    {
-      path: '/activitylist',
-      name: 'activitylist',
-      component: () => import('../views/ActivityList.vue'),
-    },
+    // {
+    //   path: '/activitylist',
+    //   name: 'activitylist',
+    //   component: () => import('../views/ActivityList.vue'),
+    // },
   ]
 })
 

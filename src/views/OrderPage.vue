@@ -18,6 +18,7 @@
                         <th>商品名称</th>
                         <th>购买件数</th>
                         <th>单价</th>
+                        <th>总价</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +26,7 @@
                         <td>{{ product.commodityName }}</td>
                         <td>{{ product.commodityNum }}</td>
                         <td>{{ product.price }}</td>
+                        <td>{{ product.totalPrice }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -38,11 +40,6 @@
                 <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address.address }} {{
                     address.name }} {{ address.phone }}</option>
             </select>
-            <div v-show="showNewAddressForm">
-                <label for="new-address">新建收货地址：</label>
-                <input type="text" id="new-address" v-model="newAddress">
-                <el-button @click="addNewAddress">保存</el-button>
-            </div>
         </div>
 
         <!-- 结算金额及优惠明细 -->
@@ -77,7 +74,6 @@ export default {
         return {
             addresses: [],
             selectedAddress: '',
-            showNewAddressForm: false,
             newAddress: '',
             selectedCoupon: '',
             discounts: [],
@@ -103,10 +99,34 @@ export default {
             .catch((error) => {
                 console.log(error)
             })
+        //获取折扣信息
+            let subSelectedRows = [];
+            this.selectedRows.forEach((product) => {
+                let newProduct = {
+                    commodityNum: product.commodityNum, 
+                    commodityId: product.commodityId,
+                };
+                subSelectedRows.push(newProduct);
+            });
+        this.$axios
+            .post(
+                '/user/getTotalReducedMoney', subSelectedRows,
+                {
+                    headers: {
+                        token: `${token}`
+                    }
+                }
+            )
+            .then((response) => {
+                this.discounts = response.data.data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     },
     computed: {
         totalPrice() {
-            return this.selectedRows.reduce((total, product) => total + product.commodityNum * product.price, 0);
+            return this.selectedRows.reduce((total, product) => total + product.totalPrice, 0);
         },
         finalPrice() {
             return this.totalPrice - this.discounts.reduce((total, discount) => total + discount.amount, 0);
