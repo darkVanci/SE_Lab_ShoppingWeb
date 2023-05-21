@@ -501,13 +501,13 @@ public class MerchantServiceImpl implements MerchantService {
                 }
                 //判断种类是否符合
                 String[] stringList = activity.getCommodityCategories().split(",");
-                boolean tag2 = false;
+                int tag2 = 0;
                 for (String commodityCategoryName : stringList) {
                     if (commodityCategoryName.equals(commodityCategoryName)) {
-                        tag2 = true;
+                        tag2 = 1;
                     }
                 }
-                if (!tag2) {
+                if (tag2==0) {
                     tag = false;
                 }
                 if (tag) {
