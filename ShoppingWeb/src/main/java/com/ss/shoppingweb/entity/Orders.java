@@ -31,4 +31,6 @@ public class Orders {
     private Integer refundState;//退款状态:0表示为退款,1表示已退款
     private Integer activityId;//商品参加的活动的id，为0代表不参加
     private double reducedPrice;//该商品被满减的份额
+    private String name;//收货人姓名
+    private String phone;//收货人电话号码
 }

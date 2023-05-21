@@ -138,6 +138,10 @@ public interface UserMapper {
     @Delete("delete from shoppingcart where id=#{id}")
     Integer deleteShoppingCart(Integer id);
 
+    /**删除购物车*/
+    @Delete("Delete from shoppingcart where userId=#{userId} and commodityId=#{commodityId}")
+    Integer deleteShoppingcartByUserIdAndCommodityId(Integer userId,Integer commodityId);
+
 
     /**
      * 根据商品ID查询商品信息
@@ -184,7 +188,7 @@ public interface UserMapper {
     Integer updateShippingAddress(ShippingAddress shippingAddress);
 
     /**新建订单*/
-    @Insert("Insert into orders (userId,shopId,commodityId,activityId,userName,shopName,commodityName,commodityPrice,commodityNum,reducedPrice,amountSum,purchaseTime,address,payState,withdrawState,deliveryState,finishState,refundRequest,refundState) values (#{userId},#{shopId},#{commodityId},#{activityId},#{userName},#{shopName},#{commodityName},#{commodityPrice},#{commodityNum},#{reducedPrice},#{amountSum},#{purchaseTime},#{address},#{payState},#{withdrawState},#{deliveryState},#{finishState},#{refundRequest},#{refundState})")
+    @Insert("Insert into orders (userId,shopId,commodityId,activityId,userName,shopName,commodityName,commodityPrice,commodityNum,reducedPrice,amountSum,purchaseTime,address,payState,withdrawState,deliveryState,finishState,refundRequest,refundState,name,phone) values (#{userId},#{shopId},#{commodityId},#{activityId},#{userName},#{shopName},#{commodityName},#{commodityPrice},#{commodityNum},#{reducedPrice},#{amountSum},#{purchaseTime},#{address},#{payState},#{withdrawState},#{deliveryState},#{finishState},#{refundRequest},#{refundState},#{name},#{phone})")
     Integer insertOrders(Orders orders);
 
     /**根据订单编号获取订单*/
@@ -335,6 +339,10 @@ public interface UserMapper {
     /**修改商品月销售量*/
     @Update("Update commodity set monthlySalesCount=#{monthlySalesCount} where id=#{id}")
     Integer updateMonthlySalesCountByCommodityId(Integer id,Integer monthlySalesCount);
+
+    /**获取activityId*/
+    @Select("Select activityId from commodity where id=#{commodityId}")
+    Integer getActivityIdByCommodityId(Integer commodityId);
 }
 
 

@@ -143,7 +143,11 @@ public class  UserController extends BaseController{
     public JsonResult<Void> createOrders(@RequestBody List<Orders> orders,@RequestHeader("token") String token){
         Integer userId=JwtUtils.getJwtId(token);
         String userName=JwtUtils.getJwtName(token);
-
+        //根据commodityId获取activityId
+        for(Orders order1:orders){
+            Integer activityId=userService.getActivityIdByCommodityId(order1.getCommodityId());
+            order1.setActivityId(activityId);
+        }
         //获取满减表
         List<Integer> ids = new ArrayList<>();
         for(Orders order:orders){
@@ -183,6 +187,10 @@ public class  UserController extends BaseController{
             order.setUserId(userId);
             order.setUserName(userName);
             userService.createOrder(order);
+        }
+        //删除购物车
+        for(Orders orders2:orders){
+            userService.deleteShoppingcartByUserIdAndCommodityId(userId,orders2.getCommodityId());
         }
         return new JsonResult<>(OK);
     }

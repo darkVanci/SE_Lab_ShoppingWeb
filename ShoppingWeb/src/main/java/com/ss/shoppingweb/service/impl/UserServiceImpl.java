@@ -641,20 +641,17 @@ public class UserServiceImpl implements UserService {
         return  userMapper.searchCommodity(string);
     };
 
+    /**获取activityId*/
+    public Integer getActivityIdByCommodityId(Integer commodityId){
+        return userMapper.getActivityIdByCommodityId(commodityId);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**删除购物车*/
+    @Override
+    public void deleteShoppingcartByUserIdAndCommodityId(Integer userId, Integer commodityId) {
+        Integer rows=userMapper.deleteShoppingcartByUserIdAndCommodityId(userId,commodityId);
+        if(rows!=1){
+            throw new UpdateException("删除购物车失败，请联系系统管理员！");
+        }
+    }
 }

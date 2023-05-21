@@ -138,4 +138,10 @@ public interface UserService {
     /**首页搜索商品，按销量排序*/
     @Select("SELECT * FROM commodity WHERE commodityName LIKE CONCAT('%', #{string}, '%')")
     List<Commodity> searchCommodity(String string);
+
+    /**获取activityId*/
+    Integer getActivityIdByCommodityId(Integer commodityId);
+
+    /**删除购物车*/
+    void deleteShoppingcartByUserIdAndCommodityId(Integer userId,Integer commodityId);
 }
