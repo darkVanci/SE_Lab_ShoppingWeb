@@ -424,7 +424,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**管理员发起活动*/
-    public String holdActivity(Activity activity) {
+    public void holdActivity(Activity activity) {
         /**获取商场利润账户的数据*/
         AdminAccount adminAccount = adminMapper.findAdminAccountByOwnerId(1);
         MiddleAccount middleAccount=adminMapper.findMiddleAccountById(1);
@@ -482,10 +482,9 @@ public class AdminServiceImpl implements AdminService {
                     adminMapper.activityOver(activity.getId());
                 }
             }, Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
-            return  "开启成功";
         }
         else {
-            return "余额不足，开启失败";
+            throw new InsertException("余额不足，开启失败！");
         }
     };
 

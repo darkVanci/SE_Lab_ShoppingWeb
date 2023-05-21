@@ -444,7 +444,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     /**对指定id的商品申请参加指定id的活动*/
     @Override
-    public String getInActivity(Integer commodityId,Integer activityId) {
+    public void getInActivity(Integer commodityId,Integer activityId) {
         //获取商店数据
         Shop shop = merchantMapper.getShopDataByShopId(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
         //获取商店中参与活动的商品数据
@@ -478,9 +478,8 @@ public class MerchantServiceImpl implements MerchantService {
             }
             if (tag) {
                 merchantMapper.getInActivity(commodityId, activityId);
-                return "成功参加活动";
             } else {
-                return "不满足参加活动的条件";
+                throw  new InsertException("不符合参加活动的条件");
             }
         } else {
             //判断申请参加的活动和之前的活动是否为同一个，否则拒绝申请
@@ -513,12 +512,11 @@ public class MerchantServiceImpl implements MerchantService {
                 }
                 if (tag) {
                     merchantMapper.getInActivity(commodityId, activityId);
-                    return "成功参加活动";
                 } else {
-                    return "不满足参加活动的条件";
+                    throw  new InsertException("不符合参加活动的条件");
                 }
             } else {
-                return "一个商店只可参加一个活动";
+                throw  new InsertException("一个商家只可以参加一个活动");
             }
         }
     }
