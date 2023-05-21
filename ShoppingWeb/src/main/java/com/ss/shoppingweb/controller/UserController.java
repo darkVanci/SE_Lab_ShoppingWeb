@@ -186,13 +186,11 @@ public class  UserController extends BaseController{
 
     /**支付订单*/
     @PostMapping("/payOrders")
-    public JsonResult<Void> payOrders(@RequestBody List<Orders> orders,@RequestHeader("token") String token){
+    public JsonResult<Void> payOrders(@RequestBody Orders order,@RequestHeader("token") String token){
         //判断用户余额是否充足
         Integer userId=JwtUtils.getJwtId(token);
-        userService.judgeUserAccount(userId,orders);
-        for(Orders order:orders){
-            userService.payOrder(order.getId());
-        }
+        userService.judgeUserAccount(userId,order);
+        userService.payOrder(order.getId());
         return new JsonResult<>(OK);
     }
 

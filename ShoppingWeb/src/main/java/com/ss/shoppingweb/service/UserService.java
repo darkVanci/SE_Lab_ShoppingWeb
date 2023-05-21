@@ -79,7 +79,7 @@ public interface UserService {
     void payOrder(Integer orderId);
 
     /**判断用户余额是否充足*/
-    void judgeUserAccount(Integer userId,List<Orders> orders);
+    void judgeUserAccount(Integer userId,Orders order);
 
     /**撤销订单*/
     void withdrawOrders(Integer orderId);

@@ -292,17 +292,12 @@ public class UserServiceImpl implements UserService {
 
 
     /**判断用户余额是否充足*/
-    public void judgeUserAccount(Integer userId,List<Orders> orders){
+    public void judgeUserAccount(Integer userId,Orders order){
         //根据用户id获取用户账户
         UserAccount userAccount=userMapper.findUserAccountByOwnerId(userId);
-        //遍历获得所有订单总价
-        double sum=0;
-        for(Orders order:orders){
-            //根据订单id获取订单信息
-            Orders orderSql=userMapper.findOrderByOrderId(order.getId());
-            sum+=orderSql.getAmountSum();
-        }
-        if(sum>userAccount.getAmount()){
+        //根据订单id获取订单信息
+        Orders orderSql=userMapper.findOrderByOrderId(order.getId());
+        if(orderSql.getAmountSum()>userAccount.getAmount()){
             throw new PocketNotAdequateException("用户余额不足，请充值！");
         }
     }
