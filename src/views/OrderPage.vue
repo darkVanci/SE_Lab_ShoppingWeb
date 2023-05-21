@@ -52,8 +52,8 @@
                         <td>{{ totalPrice }}</td>
                     </tr>
                     <tr v-for="(discount, index) in discounts" :key="index">
-                        <td>{{ discount.name }}：</td>
-                        <td>{{ discount.amount }}</td>
+                        <td>折扣 {{index + 1}} :</td>
+                        <td>{{ discount.reducedPrice }}</td>
                     </tr>
                     <tr>
                         <td>总金额：</td>
@@ -129,7 +129,7 @@ export default {
             return this.selectedRows.reduce((total, product) => total + product.totalPrice, 0);
         },
         finalPrice() {
-            return this.totalPrice - this.discounts.reduce((total, discount) => total + discount.amount, 0);
+            return this.totalPrice - this.discounts.reduce((total, discount) => total + discount.reducedPrice, 0);
         }
     },
     methods: {
@@ -170,7 +170,7 @@ export default {
                     console.log(response.data)
                     if (response.data.state == 200) {
                         this.$message.success("下单成功")
-                        this.$router.push({ name: '' })//直接跳到订单管理中的待支付页面
+                        this.$router.push({ name: 'ordersdisplay' })//直接跳到订单管理中的待支付页面
                     } else {
                         this.$message.error(response.data.message)
                     }
