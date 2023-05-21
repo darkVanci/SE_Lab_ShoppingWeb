@@ -385,9 +385,8 @@ public class MerchantServiceImpl implements MerchantService {
         }
         //删除图片
         String[] strings =commodity.getImageUrl().split(",");
-        String currentDirectory = System.getProperty("user.dir");
         for(String path:strings){
-            Path relative = Paths.get(currentDirectory,path);
+            Path relative = Paths.get(path);
             Files.delete(relative);
         }
         //下架商品，购物车同步信息，可能更新多条数据，不检查rows是否为1
