@@ -205,7 +205,7 @@ public interface AdminMapper {
 
     /**活动结束，所有参与该活动的商品结束参与活动状态*/
 
-    @Update("update commodity set activityId = 0 , activityState = 0 where activityId = #{activityId} ")
+    @Update("update commodity set activityId = 0 , activityState = -1 where activityId = #{activityId} ")
     Integer activityOverAffectCommodity(Integer activityId);
 
     /**活动结束，所有参与该活动的商店结束参与活动状态*/
@@ -231,10 +231,10 @@ public interface AdminMapper {
     Integer getInActivityAffectShop(Integer shopId,Integer activityId);
 
     /**对指定商品驳回参加活动*/
-    @Update("update commodity set activityId = 0 where id=#{id} ")
+    @Update("update commodity set activityId = 0, activityState = -1 where id=#{id} ")
     Integer refuseInActivity(Integer id);
-
     /**根据商品ID查询商品信息*/
+
     @Select("select * from commodity where id = #{id}" )
     Commodity getCommodityDataByCommodityId(Integer id);
 
@@ -244,7 +244,7 @@ public interface AdminMapper {
     Activity getActivityDataById(Integer id);
 
     /**查看指定活动所有待审核的申请*/
-    @Select("Select * from commodity where activityState = #{0}")
+    @Select("Select * from commodity where activityState = 0")
     List<Commodity> findAllCommoditiesWaitingToBeReviewed();
 }
 

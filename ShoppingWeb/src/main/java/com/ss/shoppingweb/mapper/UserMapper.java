@@ -300,7 +300,7 @@ public interface UserMapper {
 
     /**活动结束，所有参与该活动的商品结束参与活动状态*/
 
-    @Update("update commodity set activityId = 0 , activityState = 0 where activityId = #{activityId} ")
+    @Update("update commodity set activityId = 0 , activityState = -1 where activityId = #{activityId} ")
     Integer activityOverAffectCommodity(Integer activityId);
 
     /**活动结束，所有参与该活动的商店结束参与活动状态*/

@@ -181,15 +181,15 @@ public class AdminController extends BaseController{
 
     /**对指定商品批准参加活动*/
     @RequestMapping("/allowInActivity")
-    public JsonResult<Void> allowInActivity(@RequestParam Integer id){
-        adminService.allowInActivity(id);
+    public JsonResult<Void> allowInActivity(@RequestBody Activity activity){
+        adminService.allowInActivity(activity.getId());
         return new JsonResult<Void>(OK);
     };
 
     /**对指定商品驳回参加活动*/
     @RequestMapping("/refuseInActivity")
-    public JsonResult<Void> refuseInActivity(@RequestParam Integer id){
-        adminService.refuseInActivity(id);
+    public JsonResult<Void> refuseInActivity(@RequestBody Activity activity){
+        adminService.refuseInActivity(activity.getId());
         return new JsonResult<Void>(OK);
     };
 

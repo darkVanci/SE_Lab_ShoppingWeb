@@ -292,7 +292,7 @@ public class  UserController extends BaseController{
      * 根据用户id查找该用户拥有的优惠券
      */
     @RequestMapping("/findUserCouponByUserId")
-    public JsonResult<List<Coupon>> findUserCouponByUserId(@RequestParam Integer userId){
+    public JsonResult<List<Coupon>> findUserCouponByUserId(Integer userId){
         List<Coupon> data = userService.findUserCouponByUserId(userId);
         return  new JsonResult<>(OK,data);
     };
