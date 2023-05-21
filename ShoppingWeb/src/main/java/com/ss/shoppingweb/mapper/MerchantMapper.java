@@ -255,7 +255,7 @@ public interface MerchantMapper {
     Activity getActivityDataById(Integer id);
 
     /**对指定id的商品申请参加指定id的活动*/
-    @Update("update commodity set activityId = #{activityId}, activityState = #{0} where id = #{commodityId}")
+    @Update("update commodity set activityId = #{activityId}, activityState = 0 where id = #{commodityId}")
     Integer getInActivity(Integer commodityId,Integer activityId);
 
     /**查询该商店已经申请过活动的商品*/
