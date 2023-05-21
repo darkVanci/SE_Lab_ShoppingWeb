@@ -52,6 +52,9 @@ public class MerchantServiceImpl implements MerchantService {
         //查找商户id
         shop.setMerchantId(merchantMapper.findMerchantByIdcard(idCard).getId());
         shop.setState(0);
+        shop.setMonthlySalesMoney(0.00);
+        shop.setMonthlySalesCount(0);
+        shop.setActivityId(0);
         Integer rows1=merchantMapper.insertShop(shop);
         if(rows1!=1) {
             throw new InsertException("添加店铺数据出现未知错误，请联系系统管理员！");

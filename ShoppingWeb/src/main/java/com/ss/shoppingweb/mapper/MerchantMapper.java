@@ -32,7 +32,7 @@ public interface MerchantMapper {
 
     /**插入店铺信息*/
     @Insert("Insert into shop (merchantId,shopName,idCard,introduction,address,funds,registerdate," +
-            "state) values (#{merchantId},#{shopName},#{idCard},#{introduction},#{address},#{funds},#{registerdate},#{state})")
+            "state,monthlySalesMoney,monthlySalesCount,activityId) values (#{merchantId},#{shopName},#{idCard},#{introduction},#{address},#{funds},#{registerdate},#{state},#{monthlySalesMoney},#{monthlySalesCount},#{activityId})")
     Integer insertShop(Shop shop);
 
     /**根据手机号查询用户数据*/
