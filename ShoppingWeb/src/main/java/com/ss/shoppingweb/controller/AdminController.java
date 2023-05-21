@@ -167,9 +167,9 @@ public class AdminController extends BaseController{
 
     /**管理员发起活动*/
     @RequestMapping("/holdActivity")
-    public JsonResult<String> holdActivity(@RequestBody Activity activity){
-        String data = adminService.holdActivity(activity);
-        return new JsonResult<>(OK,data);
+    public JsonResult<Void> holdActivity(@RequestBody Activity activity){
+        adminService.holdActivity(activity);
+        return new JsonResult<>(OK);
     };
 
     /**查看指定活动所有待审核的申请*/

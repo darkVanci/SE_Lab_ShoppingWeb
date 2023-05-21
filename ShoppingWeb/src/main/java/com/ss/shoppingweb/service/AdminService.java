@@ -70,7 +70,7 @@ public interface AdminService {
     List<CommodityFixed> showAllCommodityFixedToBeReviewed() throws IOException;
 
     /**管理员发起活动*/
-    String holdActivity(Activity activity);
+    void holdActivity(Activity activity);
 
     /**查看指定活动所有待审核的申请*/
     List<Commodity> findAllCommoditiesWaitingToBeReviewedByActivityId(Integer activityId);
