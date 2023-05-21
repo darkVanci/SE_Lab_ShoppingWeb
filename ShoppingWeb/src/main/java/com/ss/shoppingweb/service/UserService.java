@@ -120,7 +120,7 @@ public interface UserService {
     List<Coupon> findUserCouponByUserId(Integer userId);
 
     /**查询此次下单，每个活动能减免多少*/
-    List<ActivityWithReducedPrice> getTotalReducedMoney(List<Integer> ids);
+    List<ActivityWithReducedPrice> getTotalReducedMoney(List<Orders> orders);
 
     /**根据活动ID查找活动数据*/
     Activity getActivityDataById(Integer id);
