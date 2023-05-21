@@ -19,7 +19,7 @@
           </el-menu>
         </div>
       </el-header>
-      <el-main>
+      <el-main class="main">
         <h2>{{ shop.shopName }}</h2>
         <el-space wrap>
           <el-card v-for="good in goods" :key="good.id" class="box-card" style="width: 250px">
@@ -31,13 +31,12 @@
               </div>
             </template>
             <div class="picture">
-              <img :src="'data:image/png;base64,' + good.imageString[0]"
-                :style="{ maxHeight: '200px', maxWidth: '200px' }" />
+              <img :src="good.imageUrls[0]" :style="{ maxHeight: '200px', maxWidth: '200px' }" /> 
             </div>
-            {{ good.price }}元
+            {{ good.price }} 元
             <br />
             <el-input-number v-model="good.businessState" v-if="isLogged && !isMerchant && !isAdmin"
-              @change="handleChange" size="small" :min="1" :max="100" label="描述文字"></el-input-number>
+              @change="handleChange" size="small" :min="0" :max="10000" label="描述文字"></el-input-number>
 
             <el-button class="button" v-if="isLogged && !isMerchant && !isAdmin" text type="primary" plain
               @click="addtocart(good.id, good.businessState)">加入购物车</el-button>
@@ -151,6 +150,11 @@ export default {
         )
         .then((response) => {
           console.log(response.data)
+          if (response.data.state == 200) {
+            this.$message.success('加入购物车成功')
+          } else {
+            this.$message.error(response.data.message)
+          }
         })
         .catch((error) => {
           console.log(error)
@@ -174,5 +178,10 @@ export default {
   overflow-wrap: break-word;
   /* text-align: left; */
   /* text-indent: 2em; */
+}
+
+.main {
+  width: 70%;
+  margin: auto;
 }
 </style>

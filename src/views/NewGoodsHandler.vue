@@ -1,16 +1,16 @@
 <template>
   <el-container>
-    <el-header
-      ><el-menu mode="horizontal" :ellipsis="false" router default-active="/newgoodshandler">
+    <el-header><el-menu mode="horizontal" :ellipsis="false" router default-active="/newgoodshandler">
         <el-menu-item index="/">首页</el-menu-item>
         <el-menu-item index="/backstage">开店申请</el-menu-item>
         <el-menu-item index="/newgoodshandler">商品上架申请</el-menu-item>
         <el-menu-item index="/modifygoodshandler">商品修改申请</el-menu-item>
         <el-menu-item index="/accountshopdelete">商店删除请求</el-menu-item>
-      </el-menu></el-header
-    >
-    <el-main
-      ><h1>上架申请列表</h1>
+        <el-menu-item index="/activitymanager">活动管理</el-menu-item>
+
+      </el-menu></el-header>
+    <el-main class="main">
+      <h1>上架申请列表</h1>
       <el-space wrap>
         <el-card v-for="good in goods" :key="good.goodId" class="box-card" style="width: 250px">
           <template #header>
@@ -23,26 +23,17 @@
             </div>
           </template>
           <div class="picture">
-            <img
-              :src="'data:image/png;base64,' + good.imageString[0]"
-              :style="{ maxHeight: '200px', maxWidth: '200px' }"
-            />
+            <!-- <img :src="'data:image/png;base64,' + good.imageString[0]"
+              :style="{ maxHeight: '200px', maxWidth: '200px' }" /> -->
+              <img :src="good.imageUrls[0]" :style="{ maxHeight: '200px', maxWidth: '200px' }" /> 
           </div>
           <div class="card-footer">
-            <el-button class="button" @click="approve(good.id)" type="success" plain
-              >批准</el-button
-            >
-            <el-button
-              class="button"
-              @click="disapprove(good.id, good.imageUrl)"
-              type="danger"
-              plain
-              >驳回</el-button
-            >
+            <el-button class="button" @click="approve(good.id)" type="success" plain>批准</el-button>
+            <el-button class="button" @click="disapprove(good.id, good.imageUrl)" type="danger" plain>驳回</el-button>
           </div>
         </el-card>
-      </el-space></el-main
-    >
+      </el-space>
+    </el-main>
   </el-container>
 </template>
 
@@ -138,3 +129,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.main {
+  width: 70%;
+  margin: auto;
+}
+</style>

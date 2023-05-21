@@ -17,18 +17,14 @@
                     <tr>
                         <th>商品名称</th>
                         <th>购买件数</th>
-                        <th>店铺名称</th>
                         <th>单价</th>
-                        <th>备注</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(product, index) in products" :key="index">
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.store }}</td>
+                    <tr v-for="(product, index) in selectedRows" :key="index">
+                        <td>{{ product.commodityName }}</td>
+                        <td>{{ product.commodityNum }}</td>
                         <td>{{ product.price }}</td>
-                        <td>{{ product.note }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -39,23 +35,14 @@
             <h2>收货信息</h2>
             <label for="address">选择收货地址：</label>
             <select id="address" name="address" v-model="selectedAddress">
-                <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address }}</option>
+                <option v-for="(address, index) in addresses" :key="index" :value="address">{{ address.address }} {{
+                    address.name }} {{ address.phone }}</option>
             </select>
-            <button @click="showNewAddressForm = true">新建收货地址</button>
             <div v-show="showNewAddressForm">
                 <label for="new-address">新建收货地址：</label>
                 <input type="text" id="new-address" v-model="newAddress">
-                <button @click="addNewAddress">保存</button>
+                <el-button @click="addNewAddress">保存</el-button>
             </div>
-        </div>
-
-        <!-- 优惠券 -->
-        <div class="coupons">
-            <h2>优惠券</h2>
-            <label for="coupon">选择优惠券：</label>
-            <select id="coupon" name="coupon" v-model="selectedCoupon">
-                <option v-for="(coupon, index) in coupons" :key="index" :value="coupon">{{ coupon }}</option>
-            </select>
         </div>
 
         <!-- 结算金额及优惠明细 -->
@@ -80,7 +67,7 @@
         </div>
 
         <!-- 提交订单 -->
-        <button @click="submitOrder">提交订单</button>
+        <el-button @click="submitOrder">提交订单</el-button>
     </div>
 </template>
   
@@ -88,41 +75,38 @@
 export default {
     data() {
         return {
-            products: [
-                {
-                    name: '商品1',
-                    quantity: 2,
-                    store: '店铺1',
-                    price: 100,
-                    note: '备注1'
-                },
-                {
-                    name: '商品2',
-                    quantity: 1,
-                    store: '店铺2',
-                    price: 200,
-                    note: '备注2'
-                },
-                {
-                    name: '商品3',
-                    quantity: 3,
-                    store: '店铺3',
-                    price: 300,
-                    note: '备注3'
-                }
-            ],
-            addresses: ['地址1', '地址2', '地址3'],
+            addresses: [],
             selectedAddress: '',
             showNewAddressForm: false,
             newAddress: '',
-            coupons: ['优惠券1', '优惠券2', '优惠券3'],
             selectedCoupon: '',
             discounts: [],
+            selectedRows: []
         };
+    },
+    mounted() {
+        this.selectedRows = JSON.parse(localStorage.getItem('selectedRows'));
+        const token = localStorage.getItem('token')
+        //获取地址信息
+        this.$axios
+            .get(
+                '/user/getShippingAddress',
+                {
+                    headers: {
+                        token: `${token}`
+                    }
+                }
+            )
+            .then((response) => {
+                this.addresses = response.data.data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     },
     computed: {
         totalPrice() {
-            return this.products.reduce((total, product) => total + product.quantity * product.price, 0);
+            return this.selectedRows.reduce((total, product) => total + product.commodityNum * product.price, 0);
         },
         finalPrice() {
             return this.totalPrice - this.discounts.reduce((total, discount) => total + discount.amount, 0);
@@ -132,52 +116,55 @@ export default {
         goBack() {
             this.$router.go(-1);
         },
-        addNewAddress() {
-            this.addresses.push(this.newAddress);
-            this.selectedAddress = this.newAddress;
-            this.showNewAddressForm = false;
-        },
         submitOrder() {
             // TODO: 提交订单
-        }
-    },
-    watch: {
-        selectedCoupon(newCoupon) {
-            // 更新优惠明细
-            this.discounts = [];
-
-            if (newCoupon === '') {
-                return;
-            }
-
-            switch (newCoupon) {
-                case '优惠券1':
-                    this.discounts.push({
-                        name: '优惠券1',
-                        amount: 50
-                    });
-                    break;
-                case '优惠券2':
-                    this.discounts.push({
-                        name: '优惠券2',
-                        amount: 100
-                    });
-                    break;
-                case '优惠券3':
-                    this.discounts.push({
-                        name: '优惠券3',
-                        amount: 150
-                    });
-                    break;
-                default:
-                    break;
-            }
+            const token = localStorage.getItem('token')
+            let subSelectedRows = [];
+            this.selectedRows.forEach((product) => {
+                let newProduct = {
+                    commodityName: product.commodityName, 
+                    commodityNum: product.commodityNum, 
+                    commodityPrice: product.price, 
+                    amountSum: product.totalPrice,
+                    shopName: product.commodityShopName,
+                    shopId: product.shopId,
+                    commodityId: product.commodityId,
+                };
+                subSelectedRows.push(newProduct);
+            });
+            subSelectedRows.forEach((product) => {
+                product.address = this.selectedAddress.address;
+                product.name = this.selectedAddress.name;
+                product.phone = this.selectedAddress.phone;
+            });
+            this.$axios
+                .post(
+                    '/user/createOrders', subSelectedRows,
+                    {
+                        headers: {
+                            token: `${token}`
+                        }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    if (response.data.state == 200) {
+                        this.$message.success("下单成功")
+                        this.$router.push({ name: '' })//直接跳到订单管理中的待支付页面
+                    } else {
+                        this.$message.error(response.data.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error(error)
+                })
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
 .back {
     float: left;
 }
@@ -247,6 +234,7 @@ button:hover {
 
 .summary {
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .summary table {
@@ -270,5 +258,57 @@ button[type="submit"] {
     font-weight: bold;
     font-size: 18px;
     margin-left: 20px;
+}
+
+/* 新增样式 */
+.products {
+    margin-top: 40px;
+}
+
+.products table {
+    margin-top: 20px;
+}
+
+.shipping {
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+    padding-top: 40px;
+}
+
+.shipping button {
+    margin-left: 10px;
+}
+
+.shownewaddressform {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.shownewaddressform label {
+    margin-right: 10px;
+}
+
+.shownewaddressform input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    margin-right: 10px;
+}
+
+.shownewaddressform button {
+    margin-right: 10px;
+}
+
+.summary td:nth-child(1),
+.summary td:nth-child(2) {
+    text-align: right;
+    vertical-align: middle;
+}
+
+.summary td:nth-child(2) {
+    font-size: 24px;
 }
 </style>

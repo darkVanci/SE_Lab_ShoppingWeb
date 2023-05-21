@@ -130,13 +130,13 @@ const router = createRouter({
     {
       path: '/orderpage',
       name: 'orderpage',
-      component: () => import('../views/OrderPage.vue')
+      component: () => import('../views/OrderPage.vue'),
     },
-    {
-      path: '/paymentpage',
-      name: 'paymentpage',
-      component: () => import('../views/PaymentPage.vue')
-    },
+    // {
+    //   path: '/paymentpage',
+    //   name: 'paymentpage',
+    //   component: () => import('../views/PaymentPage.vue')
+    // },
     {
       path: '/goods/:id',
       name: 'goods',
@@ -151,7 +151,27 @@ const router = createRouter({
       path: '/merchantorderconfirm',
       name: 'merchantorderconfirm',
       component: () => import('../views/MerchantOrderConfirm.vue')
-    }
+    },
+    {
+      path: '/ordersdisplay/tobepaid',
+      name: 'tobepaid',
+      component: () => import('../views/ToBePaid.vue')
+    },
+    {
+      path: '/activitymanager',
+      name: 'activitymanager',
+      component: () => import('../views/ActivityManager.vue'),
+    },
+    {
+      path: '/activitypage',
+      name: 'activitypage',
+      component: () => import('../views/ActivityPage.vue'),
+    },
+    {
+      path: '/activitylist',
+      name: 'activitylist',
+      component: () => import('../views/ActivityList.vue'),
+    },
   ]
 })
 
