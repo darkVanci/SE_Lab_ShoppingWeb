@@ -323,6 +323,18 @@ public interface UserMapper {
     /**首页搜索商品，按销量排序*/
     @Select("SELECT * FROM commodity WHERE commodityName LIKE CONCAT('%', #{string}, '%')")
     List<Commodity> searchCommodity(String string );
+
+    /**修改商店月销售额*/
+    @Update("Update shop set monthlySalesMoney=#{monthlySalesMoney} where id=#{id}")
+    Integer updateMonthlySalesMoneyByShopId(Integer id,double monthlySalesMoney);
+
+    /**修改商店月销售量*/
+    @Update("Update shop set monthlySalesCount=#{monthlySalesCount} where id=#{id}")
+    Integer updateMonthlySalesCountByShopId(Integer id,Integer monthlySalesCount);
+
+    /**修改商品月销售量*/
+    @Update("Update commodity set monthlySalesCount=#{monthlySalesCount} where id=#{id}")
+    Integer updateMonthlySalesCountByCommodityId(Integer id,Integer monthlySalesCount);
 }
 
 

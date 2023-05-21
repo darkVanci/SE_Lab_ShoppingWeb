@@ -286,17 +286,12 @@ public class UserServiceImpl implements UserService {
 
 
     /**判断用户余额是否充足*/
-    public void judgeUserAccount(Integer userId,List<Orders> orders){
+    public void judgeUserAccount(Integer userId,Orders order){
         //根据用户id获取用户账户
         UserAccount userAccount=userMapper.findUserAccountByOwnerId(userId);
-        //遍历获得所有订单总价
-        double sum=0;
-        for(Orders order:orders){
-            //根据订单id获取订单信息
-            Orders orderSql=userMapper.findOrderByOrderId(order.getId());
-            sum+=orderSql.getAmountSum();
-        }
-        if(sum>userAccount.getAmount()){
+        //根据订单id获取订单信息
+        Orders orderSql=userMapper.findOrderByOrderId(order.getId());
+        if(orderSql.getAmountSum()>userAccount.getAmount()){
             throw new PocketNotAdequateException("用户余额不足，请充值！");
         }
     }
@@ -566,6 +561,23 @@ public class UserServiceImpl implements UserService {
                 throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
             }
         }
+        //修改商店月销售量和销售额
+        Shop shop=userMapper.getShopDataByShopId(order.getShopId());
+        Integer rows13=userMapper.updateMonthlySalesMoneyByShopId(order.getShopId(),shop.getMonthlySalesMoney()+order.getAmountSum());
+        if(rows13!=1){
+            throw new UpdateException("修改商店月销售额失败，请联系系统管理员！");
+        }
+        Integer rows14=userMapper.updateMonthlySalesCountByShopId(order.getShopId(),shop.getMonthlySalesCount()+order.getCommodityNum());
+        if(rows14!=1){
+            throw new UpdateException("修改商店月销售量失败，请联系系统管理员！");
+        }
+        //修改商品的月销售量
+        Commodity commodity=userMapper.getCommodityDataById(order.getCommodityId());
+        Integer rows15=userMapper.updateMonthlySalesCountByCommodityId(order.getCommodityId(),commodity.getMonthlySalesCount()+order.getCommodityNum());
+        if(rows15!=1){
+            throw new UpdateException("修改商品月销售量失败，请联系系统管理员！");
+        }
+
     }
 
     /**查询此次下单，每个活动能减免多少*/
