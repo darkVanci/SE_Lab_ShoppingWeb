@@ -83,4 +83,7 @@ public interface AdminService {
 
     /**根据活动ID查找活动数据*/
     Activity getActivityDataById(Integer id);
+
+    /**查看指定活动所有待审核的申请*/
+    List<Commodity> findAllCommoditiesWaitingToBeReviewed();
 }

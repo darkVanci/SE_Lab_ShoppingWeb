@@ -514,5 +514,10 @@ public class AdminServiceImpl implements AdminService {
     public Activity getActivityDataById(Integer id){
         return  adminMapper.getActivityDataById(id);
     };
+
+    /**查看指定活动所有待审核的申请*/
+    public List<Commodity> findAllCommoditiesWaitingToBeReviewed(){
+        return adminMapper.findAllCommoditiesWaitingToBeReviewed();
+    };
 }
 

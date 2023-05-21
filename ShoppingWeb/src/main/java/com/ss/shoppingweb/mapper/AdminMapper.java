@@ -243,6 +243,9 @@ public interface AdminMapper {
     @Select("select * from activity where id = #{id} ")
     Activity getActivityDataById(Integer id);
 
+    /**查看指定活动所有待审核的申请*/
+    @Select("Select * from commodity where activityState = #{0}")
+    List<Commodity> findAllCommoditiesWaitingToBeReviewed();
 }
 
 

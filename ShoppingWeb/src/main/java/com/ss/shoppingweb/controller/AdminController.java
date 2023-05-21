@@ -192,4 +192,12 @@ public class AdminController extends BaseController{
         adminService.refuseInActivity(id);
         return new JsonResult<Void>(OK);
     };
+
+
+    /**查看指定活动所有待审核的申请*/
+    @RequestMapping("/findAllCommoditiesWaitingToBeReviewed")
+    public JsonResult<List<Commodity>> findAllCommoditiesWaitingToBeReviewed(){
+        List<Commodity> data = adminService.findAllCommoditiesWaitingToBeReviewed();
+        return new JsonResult<>(OK,data);
+    };
 }
