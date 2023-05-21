@@ -1,23 +1,15 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header
-        ><el-menu mode="horizontal" :ellipsis="false" router default-active="/addgoods">
+      <el-header><el-menu mode="horizontal" :ellipsis="false" router default-active="/addgoods">
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/shopmanager">商店管理</el-menu-item>
           <el-menu-item index="/addgoods">新增商品</el-menu-item>
           <el-menu-item index="/recordview">上架申请记录</el-menu-item>
           <el-menu-item index="/fixrecordview">修改申请记录</el-menu-item>
-        </el-menu></el-header
-      >
+        </el-menu></el-header>
       <el-main>
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="商品名称" prop="name">
             <el-input v-model="ruleForm.name" />
           </el-form-item>

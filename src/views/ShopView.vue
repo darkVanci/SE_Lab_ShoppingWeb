@@ -31,8 +31,7 @@
               </div>
             </template>
             <div class="picture">
-              <img :src="'data:image/png;base64,' + good.imageString[0]"
-                :style="{ maxHeight: '200px', maxWidth: '200px' }" />
+              <img :src="good.imageUrls[0]" :style="{ maxHeight: '200px', maxWidth: '200px' }" /> 
             </div>
             {{ good.price }} 元
             <br />

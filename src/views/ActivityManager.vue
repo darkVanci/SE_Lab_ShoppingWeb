@@ -51,7 +51,7 @@
                         <el-input v-model="monthlySalesCountLimit" class="normal" placeholder="商店近⼀个⽉销售额⼤于"></el-input>
                     </el-form-item>
                 </el-form>
-                <el-button @click="submit" type="primary">提交</el-button>
+                <el-button @click="handleSubmit" type="primary">提交</el-button>
             </div>
         </el-main>
     </el-container>
@@ -95,34 +95,42 @@ export default {
             })
     },
     methods: {
-        submit() {
-      const token = localStorage.getItem('token')
-      this.$axios
-        .post(
-          '/admin/holdActivity',
-          {
-            headers: {
-              token: `${token}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        )
-        .then((response) => {
-          console.log(response.data)
-          this.response = response.data
-          console.log(this.response)
-          if (this.response.state == 200) {
-            this.$message.success('批准成功')
-            location.reload() //刷新
-          } else {
-            this.$message.error(this.response.message)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('批准请求失败')
-        })
-    },
+        handleSubmit() {
+            const token = localStorage.getItem('token')
+            this.$axios
+                .post(
+                    '/admin/holdActivity',
+                    {
+                        holdingDays: this.holdingDays,
+                        funds: this.funds,
+                        commodityCategories: this.commodityCategories,
+                        x: this.X,
+                        y: this.Y,
+                        fundsLimit: this.fundsLimit,
+                        monthlySalesMoneyLimit: this.monthlySalesMoneyLimit,
+                        monthlySalesCountLimit: this.monthlySalesCountLimit,
+                        types: this.types.join(','),
+                    },
+                    {
+                        headers: {
+                            token: `${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                )
+                .then((response) => {
+                    console.log(response.data)
+                    if (response.data.state == 200) {
+                        this.$message.success('活动开启成功')
+                    } else {
+                        this.$message.error(response.data.message)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error(error)
+                })
+        },
     }
 }
 </script>

@@ -74,7 +74,7 @@
 export default {
     data() {
         return {
-            addresses: ['地址1', '地址2', '地址3'],
+            addresses: [],
             selectedAddress: '',
             showNewAddressForm: false,
             newAddress: '',
@@ -85,6 +85,23 @@ export default {
     },
     mounted() {
         this.selectedRows = JSON.parse(localStorage.getItem('selectedRows'));
+        const token = localStorage.getItem('token')
+        //获取商品信息
+        this.$axios
+            .get(
+                '/user/getShippingAddress',
+                {
+                    headers: {
+                        token: `${token}`
+                    }
+                }
+            )
+            .then((response) => {
+                this.addresses = response.data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     },
     computed: {
         totalPrice() {

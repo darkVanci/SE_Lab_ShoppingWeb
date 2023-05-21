@@ -9,7 +9,7 @@
         </div>
     <div class="container">
         <div v-for="(image, index) in images" :key="index">
-            <img :src="image" />
+            <img :src="image" :style="{ maxHeight: '400px', maxWidth: '400px' }"/>
         </div>
         <div class="goods">
             <h2>商品信息</h2>

@@ -14,6 +14,7 @@
             <el-menu-item index="/setup" v-if="isLogged && isMerchant" class="menu-item">开店</el-menu-item>
             <el-menu-item index="/backstage" v-if="isLogged && isAdmin" class="menu-item">后台</el-menu-item>
             <el-menu-item index="/shopmanager" v-if="isLogged && isMerchant" class="menu-item">商店管理</el-menu-item>
+            <el-menu-item index="/activitypage" class="menu-item">活动页面</el-menu-item>
             <div class="flex-grow"></div>
             <el-sub-menu v-if="isLogged" index="1">
               <template #title>你好，{{ username }}😊</template>

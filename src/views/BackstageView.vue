@@ -12,7 +12,7 @@
 
         </el-menu>
       </el-header>
-      <el-main>
+      <el-main class="main">
         <h1>开店请求列表</h1>
         <el-space wrap>
           <el-card v-for="shop in shops" :key="shop.id" class="box-card" style="width: 250px">
@@ -143,6 +143,11 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  width: 70%;
+  margin: auto;
+}
+
 .err_msg {
   color: red;
 }

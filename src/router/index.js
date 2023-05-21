@@ -142,6 +142,16 @@ const router = createRouter({
       name: 'activitymanager',
       component: () => import('../views/ActivityManager.vue'),
     },
+    {
+      path: '/activitypage',
+      name: 'activitypage',
+      component: () => import('../views/ActivityPage.vue'),
+    },
+    {
+      path: '/activitylist',
+      name: 'activitylist',
+      component: () => import('../views/ActivityList.vue'),
+    },
   ]
 })
 
