@@ -299,8 +299,8 @@ public class  UserController extends BaseController{
 
     /**查询此次下单，每个活动能减免多少*/
     @RequestMapping("/getTotalReducedMoney")
-    public JsonResult<List<ActivityWithReducedPrice>> getTotalReducedMoney(@RequestBody List<Integer> commodityIds){
-            List<ActivityWithReducedPrice> data = userService.getTotalReducedMoney(commodityIds);
+    public JsonResult<List<ActivityWithReducedPrice>> getTotalReducedMoney(@RequestBody List<Orders> orders){
+            List<ActivityWithReducedPrice> data = userService.getTotalReducedMoney(orders);
         return new JsonResult<>(OK,data);
     };
 

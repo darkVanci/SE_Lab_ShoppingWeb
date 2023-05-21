@@ -581,7 +581,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**查询此次下单，每个活动能减免多少*/
-    public List<ActivityWithReducedPrice> getTotalReducedMoney(List<Integer> ids){
+    public List<ActivityWithReducedPrice> getTotalReducedMoney(List<Orders> orders){
         //新建一个数据表，用以返回
         List<ActivityWithReducedPrice> activityWithReducedPriceList = new ArrayList<ActivityWithReducedPrice>();
         //获取当前举行的活动
@@ -591,12 +591,12 @@ public class UserServiceImpl implements UserService {
             //每个活动创建一个activityWithReducedPrice对象来存储，此次下单中，参与该活动的商品的金额总数和满减额度
             ActivityWithReducedPrice activityWithReducedPrice = new ActivityWithReducedPrice(activity.getId(),0,0);
             //对下单中的所有商品遍历
-            for (Integer id : ids){
+            for (Orders order : orders){
                 //通过id获取商品数据
-                Commodity commodity = userMapper.getCommodityDataById(id);
+                Commodity commodity = userMapper.getCommodityDataById(order.getCommodityId());
                 //如果商品参与了此次活动，则计数
                 if(commodity.getActivityId()==activity.getId()){
-                    activityWithReducedPrice.setTotalPrice(activityWithReducedPrice.getTotalPrice()+commodity.getPrice());
+                    activityWithReducedPrice.setTotalPrice(activityWithReducedPrice.getTotalPrice()+commodity.getPrice()*order.getCommodityNum());
                 }
             }
             //总价除以X，得出要满减几次
