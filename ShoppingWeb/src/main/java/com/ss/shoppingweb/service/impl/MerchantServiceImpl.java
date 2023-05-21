@@ -469,7 +469,7 @@ public class MerchantServiceImpl implements MerchantService {
             String[] stringList = activity.getCommodityCategories().split(",");
             boolean tag2 = false;
             for (String commodityCategoryName : stringList) {
-                if (commodityCategoryName.equals(commodityCategoryName)) {
+                if (commodityCategoryName.equals(merchantMapper.getCommodityDataByCommodityId(commodityId).getCommodityName())) {
                     tag2 = true;
                 }
             }
@@ -501,13 +501,13 @@ public class MerchantServiceImpl implements MerchantService {
                 }
                 //判断种类是否符合
                 String[] stringList = activity.getCommodityCategories().split(",");
-                int tag2 = 0;
+                boolean tag2 = false;
                 for (String commodityCategoryName : stringList) {
-                    if (commodityCategoryName.equals(commodityCategoryName)) {
-                        tag2 = 1;
+                    if (commodityCategoryName.equals(merchantMapper.getCommodityDataByCommodityId(commodityId).getCommodityName())) {
+                        tag2 = true;
                     }
                 }
-                if (tag2==0) {
+                if (!tag2) {
                     tag = false;
                 }
                 if (tag) {
