@@ -308,9 +308,9 @@ public class MerchantController extends BaseController {
     };
 
     /**对指定id的商品申请参加指定id的活动*/
-    @RequestMapping("/getInActivity")
-    public JsonResult<String> getInActivity(@RequestParam Integer commodityId,@RequestParam Integer activityId){
-        String data = merchantService.getInActivity(commodityId,activityId);
+    @PostMapping("/getInActivity")
+    public JsonResult<String> getInActivity(@RequestBody Orders orders){
+        String data = merchantService.getInActivity(orders.getCommodityId(), orders.getActivityId());
         return new JsonResult<>(OK,data);
     };
 

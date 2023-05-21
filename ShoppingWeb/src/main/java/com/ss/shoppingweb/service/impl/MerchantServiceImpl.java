@@ -449,44 +449,77 @@ public class MerchantServiceImpl implements MerchantService {
         Shop shop = merchantMapper.getShopDataByShopId(merchantMapper.getCommodityDataByCommodityId(commodityId).getShopId());
         //获取商店中参与活动的商品数据
         List<Commodity> commodities = merchantMapper.getCommodityApplyActivity(shop.getId());
-        //判断申请参加的活动和之前的活动是否为同一个，否则拒绝申请
-        if (commodities.get(0).getActivityId() == activityId) {
+        if (commodities.size()==0) {
             //判断商店是否满足阈值要求
             boolean tag = true;
             Activity activity = merchantMapper.getActivityDataById(activityId);
             //判断注册资金
-            if(shop.getFunds()<=activity.getFundsLimit()){
+            if (shop.getFunds() <= activity.getFundsLimit()) {
                 tag = false;
             }
             //判断月销售额
-            if(shop.getMonthlySalesMoney()<=activity.getMonthlySalesMoneyLimit()){
+            if (shop.getMonthlySalesMoney() <= activity.getMonthlySalesMoneyLimit()) {
                 tag = false;
             }
             //判断月销售量
-            if(shop.getMonthlySalesCount()<=activity.getMonthlySalesCountLimit()){
+            if (shop.getMonthlySalesCount() <= activity.getMonthlySalesCountLimit()) {
                 tag = false;
             }
             //判断种类是否符合
             String[] stringList = activity.getCommodityCategories().split(",");
             boolean tag2 = false;
-            for(String commodityCategoryName : stringList){
-                if(commodityCategoryName.equals(commodityCategoryName)){
-                    tag2=true;
+            for (String commodityCategoryName : stringList) {
+                if (commodityCategoryName.equals(commodityCategoryName)) {
+                    tag2 = true;
                 }
             }
-            if(!tag2){
+            if (!tag2) {
                 tag = false;
             }
-            if(tag) {
+            if (tag) {
                 merchantMapper.getInActivity(commodityId, activityId);
                 return "成功参加活动";
-            }
-            else{
+            } else {
                 return "不满足参加活动的条件";
             }
-        }
-        else{
-            return  "一个商店只可参加一个活动";
+        } else {
+            //判断申请参加的活动和之前的活动是否为同一个，否则拒绝申请
+            if (commodities.get(0).getActivityId() == activityId) {
+                //判断商店是否满足阈值要求
+                boolean tag = true;
+                Activity activity = merchantMapper.getActivityDataById(activityId);
+                //判断注册资金
+                if (shop.getFunds() <= activity.getFundsLimit()) {
+                    tag = false;
+                }
+                //判断月销售额
+                if (shop.getMonthlySalesMoney() <= activity.getMonthlySalesMoneyLimit()) {
+                    tag = false;
+                }
+                //判断月销售量
+                if (shop.getMonthlySalesCount() <= activity.getMonthlySalesCountLimit()) {
+                    tag = false;
+                }
+                //判断种类是否符合
+                String[] stringList = activity.getCommodityCategories().split(",");
+                boolean tag2 = false;
+                for (String commodityCategoryName : stringList) {
+                    if (commodityCategoryName.equals(commodityCategoryName)) {
+                        tag2 = true;
+                    }
+                }
+                if (!tag2) {
+                    tag = false;
+                }
+                if (tag) {
+                    merchantMapper.getInActivity(commodityId, activityId);
+                    return "成功参加活动";
+                } else {
+                    return "不满足参加活动的条件";
+                }
+            } else {
+                return "一个商店只可参加一个活动";
+            }
         }
     }
 
