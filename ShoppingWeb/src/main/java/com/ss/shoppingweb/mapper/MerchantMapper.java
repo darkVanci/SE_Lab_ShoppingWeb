@@ -147,7 +147,7 @@ public interface MerchantMapper {
     List<ListRecord> findRecords(Integer shopId,Integer pageNum);
 
     /**展示该商店的所有上架商品*/
-    @Select("SELECT * from commodity where commodity.businessState=1 and commodity.shopId =#{shopId} ")
+    @Select("SELECT * from commodity where businessState=1 and shopId =#{shopId} ")
     List<Commodity> findAllCommodityAlreadyPermitted(Integer shopId);
 
     /**修改商品信息*/
@@ -262,7 +262,9 @@ public interface MerchantMapper {
     @Select("select * from commodity where shopId = #{shopId} and activityId != 0")
     List<Commodity> getCommodityApplyActivity(Integer shopId);
 
-
+    /**插入中间商城流水记录*/
+    @Insert("Insert into middleaccountrecorder (initiatorRole,initiatorId,initiatorName,receiverRole,receiverId,receiverName,amount,tradeTime,tradeRecord,inAndout) values (#{initiatorRole},#{initiatorId},#{initiatorName},#{receiverRole},#{receiverId},#{receiverName},#{amount},#{tradeTime},#{tradeRecord},#{inAndout})")
+    Integer insertMiddleAccountRecorder(MiddleAccountRecorder middleAccountRecorder);
 }
 
 

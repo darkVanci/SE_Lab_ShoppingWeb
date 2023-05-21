@@ -540,6 +540,27 @@ public class MerchantServiceImpl implements MerchantService {
         if(rows3!=1){
             throw new InsertException("导入用户流水失败，请联系系统管理员！");
         }
+        MiddleAccount middleAccount=merchantMapper.findMiddleAccountById(1);
+        double amount2=middleAccount.getAmount()-order.getAmountSum();
+        Integer rows4=merchantMapper.updateMiddleAccount(amount2,1);
+        if(rows4!=1){
+            throw new UpdateException("修改中间账户失败，请联系系统管理员！");
+        }
+        MiddleAccountRecorder middleAccountRecorder=new MiddleAccountRecorder();
+        middleAccountRecorder.setInitiatorRole(4);
+        middleAccountRecorder.setInitiatorId(1);
+        middleAccountRecorder.setInitiatorName("商城中间账户");
+        middleAccountRecorder.setReceiverRole(1);
+        middleAccountRecorder.setReceiverId(order.getUserId());
+        middleAccountRecorder.setReceiverName(order.getUserName());
+        middleAccountRecorder.setAmount(order.getAmountSum());
+        middleAccountRecorder.setTradeTime(LocalDateTime.now());
+        middleAccountRecorder.setTradeRecord("交易退款");
+        middleAccountRecorder.setInAndout(-1);
+        Integer rows5=merchantMapper.insertMiddleAccountRecorder(middleAccountRecorder);
+        if(rows5!=1){
+            throw new InsertException("插入中间商城流水失败，请联系系统管理员！");
+        }
     }
 
 

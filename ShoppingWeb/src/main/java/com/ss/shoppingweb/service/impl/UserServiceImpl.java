@@ -535,7 +535,7 @@ public class UserServiceImpl implements UserService {
             middleAccountRecorder3.setTradeTime(LocalDateTime.now());
             middleAccountRecorder3.setTradeRecord("活动满减补贴资金");
             middleAccountRecorder3.setInAndout(-1);
-            Integer rows11=userMapper.insertMiddleAccountRecorder(middleAccountRecorder2);
+            Integer rows11=userMapper.insertMiddleAccountRecorder(middleAccountRecorder3);
             if(rows11!=1){
                 throw new InsertException("导入中间商城流水记录失败，请联系系统管理员！");
             }
@@ -556,7 +556,7 @@ public class UserServiceImpl implements UserService {
             shopAccountRecorder1.setTradeTime(LocalDateTime.now());
             shopAccountRecorder1.setTradeRecord("活动满减补贴资金");
             shopAccountRecorder1.setInAndout(1);
-            Integer rows13=userMapper.insertShopAccountRecorder(shopAccountRecorder);
+            Integer rows13=userMapper.insertShopAccountRecorder(shopAccountRecorder1);
             if(rows13!=1){
                 throw new InsertException("导入商店账户流水失败，请联系系统管理员！");
             }

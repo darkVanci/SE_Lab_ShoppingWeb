@@ -99,24 +99,27 @@ public class  UserController extends BaseController{
     };
 
     /**根据用户id查找收货地址*/
-    @RequestMapping("/findUserShippingAddressByUserId")
-    public JsonResult<List<ShippingAddress>> findUserShippingAddressByUserId(@RequestParam Integer userId){
+    @RequestMapping("/getShippingAddress")
+    public JsonResult<List<ShippingAddress>> findUserShippingAddressByUserId(HttpServletRequest request){
+        Integer userId=JwtUtils.getJwtId(request.getHeader("token"));
         List<ShippingAddress> data = userService.findUserShippingAddressByUserId(userId);
         return new JsonResult<>(OK,data);
     }
 
 
     /**新建收货地址*/
-    @RequestMapping("/addShippingAddress")
-    public JsonResult<Void> addShippingAddress(@RequestBody ShippingAddress shippingAddress){
+    @PostMapping ("/addShippingAddress")
+    public JsonResult<Void> addShippingAddress(@RequestBody ShippingAddress shippingAddress,@RequestHeader("token") String token){
+        Integer userId=JwtUtils.getJwtId(token);
+        shippingAddress.setUserId(userId);
         userService.addShippingAddress(shippingAddress);
         return new JsonResult<>(OK);
     };
 
     /**删除收货地址*/
-    @RequestMapping("/deleteShippingAddress")
-    public JsonResult<Void> deleteShippingAddress(@RequestParam Integer id){
-        userService.deleteShippingAddress(id);
+    @PostMapping("/deleteShippingAddress")
+    public JsonResult<Void> deleteShippingAddress(@RequestBody ShippingAddress shippingAddress){
+        userService.deleteShippingAddress(shippingAddress.getId());
         return new JsonResult<>(OK);
     };
 
